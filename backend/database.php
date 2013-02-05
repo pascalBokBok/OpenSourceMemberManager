@@ -37,11 +37,27 @@ function addNewMember($member){
 		values ('".$db->escapeString($member["name"])."',
 		'".$db->escapeString($member["email_address"])."')");
 	if (!$result)
-		exit("Could not save user");
+		exit("Could not add member");
 }
 
-function updateMember($id,$memberInfoJson){
-	
+function updateMember($member){
+	$db = connect();
+	if (is_numeric($member["id"])){
+		$member["id"] = $member["id"];
+	}
+	$id = (int) $id;
+	$result = $db->exec("UPDATE members SET name='".$db->escapeString($member["name"])."',
+		email_address='".$db->escapeString($member["email_address"])."' where id=".$member["id"]);
+	if (!$result)
+		exit("Could not update member");
+}
+
+function deleteMember($id){
+	$db = connect();
+	$id = (int) $id;
+	$result = $db->exec("delete from Members where id=".$id);
+	if (!$result)
+		exit("Could delete member");
 }
 
 ?>

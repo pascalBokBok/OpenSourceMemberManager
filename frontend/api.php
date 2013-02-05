@@ -11,6 +11,13 @@ if ($_GET["action"]=="getMemberList"){
 	$member = $_GET;
 	unset($member['action']);
 	addNewMember($member);
+} else if ($_GET["action"]=="updateMember"){
+	$db = connect();
+	$member = $_GET;
+	unset($member['action']);
+	addNewMember($member);
+} else if ($_GET["action"]=="deleteMember"){
+    deleteMember($_GET['id']);
 } else {
 	exit("Action not known");
 }
