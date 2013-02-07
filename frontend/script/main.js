@@ -18,7 +18,9 @@ function init(){
 	})
 }
 function deleteMember(id){
-	$.get('api.php?action=deleteMember&id='+id,refreshMemberList);
+	if (confirm ("Are you sure you want to delete?")){
+		$.get('api.php?action=deleteMember&id='+id,refreshMemberList);
+	}
 }
 function editMemberInitiate(id){
 	alert('You won the implementation :-)');
