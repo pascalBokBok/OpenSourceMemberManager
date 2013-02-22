@@ -4,7 +4,7 @@ require_once 'dbEncryptionKey.php';
 function initialize($db){
 	require_once '../database_schema/database.php';
 	if ($db->exec($db_schema_members) ===FALSE){
-		die ("Initializing database schema failed: ".$db->lastErrorMsg());
+		throw new Exception ("Initializing database schema failed: ".$db->lastErrorMsg());
 	}
 }
 
@@ -24,6 +24,9 @@ function connect(){
 function getAllMembers(){
 	$db = connect();
 	$res = $db->query("Select * from members");
+	if ($res==false){
+        throw new Exception('Could not get memberlist:'.$db->lastErrorMsg());
+	}
 	$out = array();
 	while ($row = $res->fetchArray(SQLITE3_ASSOC)) {
 		$out[] = $row;
@@ -37,7 +40,7 @@ function addNewMember($member){
 		values ('".$db->escapeString($member["name"])."',
 		'".$db->escapeString($member["email_address"])."')");
 	if (!$result)
-		exit("Could not add member");
+		throw new Exception("Could not add member");
 }
 
 function updateMember($member){
@@ -49,7 +52,10 @@ function updateMember($member){
 	$result = $db->exec("UPDATE members SET name='".$db->escapeString($member["name"])."',
 		email_address='".$db->escapeString($member["email_address"])."' where id=".$member["id"]);
 	if (!$result)
-		exit("Could not update member");
+		throw new Exception("Could not execute update member");
+    if ($db->changes()==0){
+        throw new Exception("No change in database");
+    }
 }
 
 function deleteMember($id){
@@ -57,7 +63,10 @@ function deleteMember($id){
 	$id = (int) $id;
 	$result = $db->exec("delete from Members where id=".$id);
 	if (!$result)
-		exit("Could delete member");
+		throw new Exception("Could not execute 'delete member':".$db->lastErrorMsg());
+    if ($db->changes()==0){
+        throw new Exception("No change in database");
+    }
 }
 
 ?>
