@@ -1,5 +1,4 @@
 function apiCall(action, func, args){
-//     console.log(args);
     var params = {action:action};
     if ($.isArray(args)){
         for (var i=0;i<args.length;i++){
@@ -10,7 +9,6 @@ function apiCall(action, func, args){
             params[key] = val;
         });
     }
-    console.log(params);
     $.getJSON('api.php',params,function (data){
                 if (data.error) {
                     alert(data.error_msg);
@@ -44,6 +42,4 @@ function deleteMember(id){
 function editMemberInitiate(id){
     alert('You won the implementation :-)');
 }
-
-
 $(document).ready(init);
