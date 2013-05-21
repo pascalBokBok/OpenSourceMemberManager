@@ -1,5 +1,4 @@
 <?php
-require_once 'dbEncryptionKey.php';
 
 function initialize($db){
 	require_once '../database_schema/database.php';
@@ -9,8 +8,7 @@ function initialize($db){
 }
 
 function connect(){
-	global $dbEncryptionKey;
-	if ($db = new SQLite3('db.sqlite3',SQLITE3_OPEN_READWRITE | SQLITE3_OPEN_CREATE,$dbEncryptionKey)){
+	if ($db = new SQLite3('db.sqlite3',SQLITE3_OPEN_READWRITE | SQLITE3_OPEN_CREATE)){
 		$tableCheck = $db->query("SELECT name FROM sqlite_master WHERE name='members'");
 		if ($tableCheck->fetchArray() === FALSE){
 			initialize($db);
