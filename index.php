@@ -14,10 +14,6 @@
 		Members in the database register:<br>
 		<ul id="memberList"></ul>
 		<h2>Add a new member</h2>
-		<form id="addMemberForm">
-			<label for="name">Name</label><input id="name" type="text" name="name" autofocus required><br>
-			<label for="email_address">Email address</label><input id="email_address" type="text" name="email_address" required><br>
-			<input type="submit">
-		</form>
+		<div id="createMember"></div>
 	</body>
 </html>

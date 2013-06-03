@@ -5,10 +5,8 @@
     JSON definition of data.
     Could be used to create an SQL database table.
 */
-$memberDataJSON = '{
-    "name": "members",
-    "identifier_field" : "id",
-    "fields" : [
+  
+$memberDataFieldsJSON = '[
         {
             "name": "id",
             "type": "integer",
@@ -81,9 +79,13 @@ $memberDataJSON = '{
             "caption":"Last Payment year",
             "properties":[]
         }
-        
-    ]
-}';
+    ]';
+
+$memberDataJSON = '{
+    "name": "members",
+    "identifier_field" : "id",
+    "fields" : '.$memberDataFieldsJSON.'
+}';    
 
 $dataJSON = '{
     "application_name":"Open Source Member Manager",
