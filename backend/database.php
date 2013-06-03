@@ -1,7 +1,7 @@
 <?php
 
 function initialize($db){
-    require_once '../database_schema/data.php';
+    require_once 'data.php';
 	$db_schema_members = createDatabaseTable($memberDataJSON,$fieldType2sqliteType);
 	if ($db->exec($db_schema_members) ===FALSE){
 		throw new Exception ("Initializing database schema failed: ".$db->lastErrorMsg());

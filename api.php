@@ -5,7 +5,7 @@ try {
 		throw new Exception("You need to specify an action.");
 	}
 
-	require_once "../backend/database.php";
+	require_once "backend/database.php";
 	if ($_GET["action"]=="getMemberList"){
 		$payload = getAllMembers();
 	} else if ($_GET["action"]=="addNewMember"){
@@ -17,7 +17,7 @@ try {
 		$db = connect();
 		$member = $_GET;
 		unset($member['action']);
-		addNewMember($member);
+		updateMember($member);
 	} else if ($_GET["action"]=="deleteMember"){
 		deleteMember($_GET['id']);
 	} else {
@@ -29,6 +29,6 @@ try {
 	$response["error_msg"] = $e->getMessage();
 	$response["error_code"]= $e->getCode();
 }
-$response["payload"] = $payload;
+$response["payload"] = $payload or null;
 exit(json_encode($response));
 ?>
