@@ -83,13 +83,54 @@ $memberDataFieldsJSON = '[
 
 $memberDataJSON = '{
     "name": "members",
+    "caption":"Members",
     "identifier_field" : "id",
+    "caption_fields" : ["name","surname"],
     "fields" : '.$memberDataFieldsJSON.'
 }';    
 
 $dataJSON = '{
     "application_name":"Open Source Member Manager",
-    "data_structures": ['.$memberDataJSON.']
+    "data_structures": { "persons": '.$memberDataJSON.',
+                         "roles": {   "name":             "roles",
+                                      "caption":          "Roles",
+                                      "identifier_field": "name",
+                                      "caption_fields":   ["name"],
+                                      "fields":           [{
+                                                             "name": "name",
+                                                             "type": "text",
+                                                             "required":true,
+                                                             "editable":true,
+                                                             "caption":"Name",
+                                                             "properties":[]
+                                                            }
+                                                           ]
+                                      },
+                         "role_members": {
+                                      "name":             "roles_members",
+                                      "caption":          "Role Members",
+                                      "identifier_field": ["person", "role"],
+                                      "caption_fields":   ["person", "role"],
+                                      "fields":           [{
+                                                             "name": "person",
+                                                             "type": "integer",
+                                                             "required":true,
+                                                             "editable":false,
+                                                             "caption":"Person ID",
+                                                             "properties":[],
+                                                             "references": ["persons", "id"]
+                                                            },{
+                                                             "name": "role",
+                                                             "type": "text",
+                                                             "required":true,
+                                                             "editable":false,
+                                                             "caption":"Role",
+                                                             "properties":[],
+                                                             "references": ["roles", "name"]
+                                                            }
+                                                           ]
+                                      }
+                          }
 }';
 
 $fieldType2sqliteType = array("text"=>"text",
@@ -99,12 +140,22 @@ $fieldType2sqliteType = array("text"=>"text",
                          "select"=>"text");
 
 /** assuming we are dealing with trusted input here. */
-function createDatabaseTable($tableJSON,$typeTrans){
-    $table = json_decode($tableJSON);
+function createDatabaseTables($structJSON, $typeTrans){
+    $struct = json_decode($structJSON);
+    var_dump($structJSON);
+    $sql = "";
+    foreach ($struct->data_structures as $table){
+        $sql .= createDatabaseTable($table, $typeTrans);
+    }
+    return $sql;
+}
+
+function createDatabaseTable($table,$typeTrans){
     $cols = array();
     foreach ($table->fields as $field){
         $myCol = "'".$field->name."' ".$typeTrans[$field->type];
         if ($field->name==$table->identifier_field){
+            //FIXME handle combined primary key
             $myCol .= ' PRIMARY KEY';
         } else if ($field->required){
             $myCol .= " NOT NULL";

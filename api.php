@@ -7,7 +7,7 @@ try {
 
     require_once "backend/database.php";
     if ($_GET["action"]=="getMemberList"){
-        $payload = getAllMembers();
+        $payload = getMembers();
     } else if ($_GET["action"]=="addNewMember"){
         $db = connect();
         $member = $_GET;
@@ -23,6 +23,9 @@ try {
     } else if ($_GET["action"]=="getMemberFields"){
         require_once 'backend/data.php';
         $payload = $memberDataFieldsJSON;
+    } else if ($_GET["action"]=="getMember"){
+        $members = getMembers($_GET['id']);
+        $payload = $members[0];
     } else {
         throw new Exception("Action not known");
     }

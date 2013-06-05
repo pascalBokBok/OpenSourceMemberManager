@@ -2,7 +2,7 @@
 
 function initialize($db){
     require_once 'data.php';
-    $db_schema_members = createDatabaseTable($memberDataJSON,$fieldType2sqliteType);
+    $db_schema_members = createDatabaseTables($dataJSON,$fieldType2sqliteType);
     if ($db->exec($db_schema_members) ===FALSE){
         throw new Exception ("Initializing database schema failed: ".$db->lastErrorMsg());
     }
@@ -20,9 +20,12 @@ function connect(){
     }
 }
 
-function getAllMembers(){
+function getMembers($id=null){
     $db = connect();
-    $res = $db->query("Select * from members");
+    $q="Select * from members";
+    if ($id!=null)
+        $q .= ' where id='.(int)$id;
+    $res = $db->query($q);
     if ($res==false){
         throw new Exception('Could not get memberlist:'.$db->lastErrorMsg());
     }
@@ -53,10 +56,7 @@ function addNewMember($member){
 
 function updateMember($member){
     $db = connect();
-    if (is_numeric($member["id"])){
-        $member["id"] = $member["id"];
-    }
-    $id = (int) $id;
+    $id = (int) $member["id"];
     $result = $db->exec("UPDATE members SET name='".$db->escapeString($member["name"])."',
         email_address='".$db->escapeString($member["email_address"])."' where id=".$member["id"]);
     if (!$result)

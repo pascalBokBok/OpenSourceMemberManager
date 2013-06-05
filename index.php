@@ -14,6 +14,6 @@
 		Members in the database register:<br>
 		<ul id="memberList"></ul>
 		<h2>Add a new member</h2>
-		<div id="createMember"></div>
+		<div id="memberFormArea"></div>
 	</body>
 </html>
