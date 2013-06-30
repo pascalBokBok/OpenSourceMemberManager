@@ -20,6 +20,11 @@ function apiCall(action, func, args){
 function refreshMemberlist(){
     apiCall('getMemberList',renderMemberList);
 }
+function deleteMember(id){
+    if (confirm ("Are you sure you want to delete?")){
+        apiCall('deleteMember',refreshMemberlist,{id:id})
+    }
+}
 function renderMemberList(data){
     var items = [];
     $.each(data, function(key, val) {
@@ -29,53 +34,46 @@ function renderMemberList(data){
 }
 function init(){
     refreshMemberlist()
-    apiCall("getMemberFields",createMemberForm);
+    apiCall("getMemberFields",createMemberForms);
+    $('#editMember').jqm();
 }
-function deleteMember(id){
-    if (confirm ("Are you sure you want to delete?")){
-        apiCall('deleteMember',refreshMemberlist,{id:id})
-    }
+function createMemberForms(data){
+    var memberFields = JSON.parse(data);
+    //Create and Initiate new member form.
+    $('#addMember').append(createForm('newMemberForm',memberFields));
+    $('#newMemberForm').submit(function(){
+        apiCall('addNewMember',afterFormSubmit,$('#newMemberForm').serializeArray());
+        return false;
+    });
+    //Create edit member form.
+    $('#editMember').html(createForm('editMemberForm',memberFields));
+    $('#editMemberForm').submit(function(){
+        apiCall('updateMember',function(){refreshMemberlist();$('#editMember').jqmHide()},$('#editMemberForm').serializeArray());
+        return false;
+    });
 }
 function afterFormSubmit(){
     refreshMemberlist();
-    $('#memberForm').trigger('reset').find('input:enabled').first().focus();
-    newMemberInitiate();
+    $('#newMemberForm').trigger('reset');
+    $('#newMemberForm').find('input:enabled').first().focus();
 }
 
 function editMemberInitiate(id){
     var fillInMemberData = function(data) {
-        console.log(data);
         for(var i in memberStruct){
             var el = memberStruct[i];
-            var input = $('#memberForm>:input[name='+el.name+']');
+            var input = $('#editMemberForm>:input[name='+el.name+']');
             var value = data[el.name];
             switch (el.type){
-                case "select":
-                    input.attr('value',"later...");
-                    break;
                 case "checkbox":
                     input.attr('checked',data[el.name]?'checked':'false');
                 default:
                     input.attr('value',data[el.name]);
             }
         }
+        $('#editMember').jqmShow();
     };
     apiCall('getMember',fillInMemberData,{'id':id});
-    $('#memberForm').off('submit').on('submit',function(){
-        apiCall('updateMember',afterFormSubmit,$('#memberForm').serializeArray());
-        return false;
-    });
-}
-function newMemberInitiate(){
-    $('#memberForm').off('submit').one('submit',function(){
-        apiCall('addNewMember',afterFormSubmit,$('#memberForm').serializeArray());
-        return false;
-    });
-}
-function createMemberForm(data){
-    var memberFields = JSON.parse(data);
-    $('#memberFormArea').append(createForm('memberForm',memberFields));
-    newMemberInitiate();
 }
 function createForm(id,elements){
     memberStruct = elements;
@@ -104,7 +102,10 @@ function createForm(id,elements){
                 input.attr('required','required');
             }
         }
-        form.append(input).append('<br>');
+        form.append(input);
+        if (e.editable){
+            form.append('<br>');
+        }
     }
     form.append('<input type="submit">');
     return form;

@@ -2,3 +2,15 @@ label{
 	width:125px;
 	float:left;
 }
+#addMember{
+    display:none;
+}
+#menu>a{
+    display:inline-block;
+    padding:3px 5px;
+    background-color:#eef;
+    border:1px solid black;
+}
+#menu>a:hover{
+    background-color:#ddf;
+}
