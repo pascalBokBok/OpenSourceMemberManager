@@ -14,10 +14,19 @@
         <h1>Open Source Member Database</h1>
         <div id="menu">
             <a href="javascript:void(0)" onclick="$('#addMember').toggle()">Add member</a>
+            <a href="javascript:void(0)" id="importCsvButton">Import CSV</a>
         </div>
         <div id="addMember"></div>
         <div id="editMember" class="jqmWindow"></div>
         <h2>Members</h2>
         <ul id="memberList"></ul>
+        
+        <div id="importCsvDiv" class="jqmWindow" style="display:none">
+			<form name="importCSVForm" id="importCSVForm" enctype="multipart/form-data">
+				<label for="importCsvFileName">Choose CSV file to import</label>
+				<input type="file" id="importCsvFileName" name="importFile"><br>
+				<input type="submit">
+		    </form>
+		</div>        
     </body>
 </html>

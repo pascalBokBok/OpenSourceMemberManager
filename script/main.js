@@ -1,5 +1,8 @@
-function apiCall(action, func, args){
-    var params = {action:action};
+function apiCall(action, func, args, method){
+	if (method == null) {
+		method="GET";
+	} 
+	var params = {action:action};
     if ($.isArray(args)){
         for (var i=0;i<args.length;i++){
             params[args[i].name] = args[i].value;
@@ -8,15 +11,36 @@ function apiCall(action, func, args){
         $.each(args, function(key, val){
             params[key] = val;
         });
+    } else if ( typeof(args) == "object" && args instanceof FormData) {
+    	params = args;
+    	params.append('action', action);
     }
-    $.getJSON('api.php',params,function (data){
-                if (data.error) {
-                    alert(data.error_msg);
-                } else {
-                    func(data["payload"]);
-                }
-        });
+    var handler = function (dataJSON){
+    	var data = JSON.parse(dataJSON);
+    	if (data.error) {
+            alert(data.error_msg);
+        } else {
+            func(data["payload"]);
+        }
+    };
+    
+    if (method == 'GET') {
+    	$.get('api.php',params, handler);
+    } else if (method=="POST") {
+    	$.ajax({
+    	    url: 'api.php',
+    	    data: params,
+    	    cache: false,
+    	    contentType: false,
+    	    processData: false,
+    	    type: 'POST',
+    	    success: handler
+    	});
+    } else {
+    	alert("Unknown method in API call: " + method);
+    }
 }
+
 function refreshMemberlist(){
     apiCall('getMemberList',renderMemberList);
 }
@@ -36,6 +60,14 @@ function init(){
     refreshMemberlist()
     apiCall("getMemberFields",createMemberForms);
     $('#editMember').jqm();
+    $('#importCsvDiv').jqm().jqmAddTrigger("#importCsvButton");
+    
+    $('#importCSVForm').submit(function(e){
+    	var data = new FormData(document.forms.namedItem("importCSVForm"));
+		apiCall('importCsv', function(){ }, data, "POST");
+		return false;
+    });
+    
 }
 function createMemberForms(data){
     var memberFields = JSON.parse(data);
@@ -110,4 +142,5 @@ function createForm(id,elements){
     form.append('<input type="submit">');
     return form;
 }
+
 $(document).ready(init);

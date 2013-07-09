@@ -77,4 +77,53 @@ function deleteMember($id){
     }
 }
 
+function importCsv() {
+	$filename = $_FILES['importFile']['tmp_name'];
+	$res = '';
+	if ($filename) {
+		$delim = $_POST['delimiter'] or ';';
+		$handle = fopen($filename, "r");
+		$data = fgetcsv($handle, 0, $delim);
+		
+		if ($data) {
+			$db = connect();
+			$importFields = shift($data);
+			$databaseFields = json_decode($memberDataFieldsJSON);
+			$dataFields   = Array();
+			$importMap    = Array();
+			foreach ($databaseFields as $dbField) {
+				$dataFields[ $dbField['name'] ] = 1;
+			}
+			
+			foreach ($importFields as $i => $fieldname) {
+				if ($dataFields[ $fieldname]) {
+					$importMap[ $fieldname ] = $i;
+				}
+			}
+				
+			if (count( $importFields) == 0) {
+				throw new Exception("No fields matched");
+			}
+			
+			$importFields = array_keys(  $importMap );
+			
+			$sql = 'BEGIN TRANSACTION;';
+			foreach ( $data as $rowno => $row ) {
+				$sql .= "INSERT INTO members (" . implode($importFields, ", ") . ") VALUES (";
+				$values = Array();
+				foreach ($importFields as $fieldName) {
+					array_push($values, $db->escapeString($row[ $importMap[ $fieldName ]]));
+				}
+				$sql .= implode( $values, ", ") . ");";				
+			}
+			$sql .= "END TRANSACTION";
+			$result = $db->exec($sql);
+			if (!$result)
+        		throw new Exception("Could not insert row $rowno:".$db->lastErrorMsg());							
+		} else {
+			throw new Exception("Invalid import format");
+		}
+	}
+	return $res;
+}
 ?>

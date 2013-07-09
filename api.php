@@ -26,6 +26,8 @@ try {
     } else if ($_GET["action"]=="getMember"){
         $members = getMembers($_GET['id']);
         $payload = $members[0];
+    } else if ($_REQUEST["action"]=="importCsv"){
+    	$payload = importCsv();
     } else {
         throw new Exception("Action not known");
     }
