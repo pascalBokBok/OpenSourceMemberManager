@@ -22,11 +22,12 @@
         <ul id="memberList"></ul>
         
         <div id="importCsvDiv" class="jqmWindow" style="display:none">
-			<form name="importCSVForm" id="importCSVForm" enctype="multipart/form-data">
-				<label for="importCsvFileName">Choose CSV file to import</label>
-				<input type="file" id="importCsvFileName" name="importFile"><br>
-				<input type="submit">
-		    </form>
-		</div>        
+            <p>Imports a CSV file with fieldsnames on first row, ";" as separator, "\" as escape-character. File encoding: ISO 8859-15</p>
+            <form action="import.php" method="post" enctype="multipart/form-data">
+                <label for="importCsvFileName">CSV file to import:</label>
+                <input type="file" id="importCsvFileName" name="importFile"><br>
+                <input type="submit">
+            </form>
+        </div>
     </body>
 </html>

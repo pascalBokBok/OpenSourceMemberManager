@@ -57,8 +57,21 @@ function addNewMember($member){
 function updateMember($member){
     $db = connect();
     $id = (int) $member["id"];
-    $result = $db->exec("UPDATE members SET name='".$db->escapeString($member["name"])."',
-        email_address='".$db->escapeString($member["email_address"])."' where id=".$member["id"]);
+    require_once 'data.php';
+    $memberFields = json_decode($memberDataFieldsJSON);
+    $data = array();
+    foreach ($memberFields as $f){
+        if ($f->name == 'id')
+            continue;
+        $col = "'".$f->name."'";
+        if ( isset($member[$f->name]) ){
+            $data[] .= $col."='".$db->escapeString($member[$f->name])."'";
+        } else{
+            $data[] .= $col.'=null';
+        }
+    }
+    $sql = "UPDATE members SET ".implode($data,', ')." where id=".$id;
+    $result = $db->exec($sql);
     if (!$result)
         throw new Exception("Could not execute update member");
     if ($db->changes()==0){
@@ -76,54 +89,43 @@ function deleteMember($id){
         throw new Exception("No change in database");
     }
 }
+function getMemberFields(){
+    require_once 'data.php';
+    $databaseFields = json_decode($memberDataFieldsJSON,$assoc=true);
+    $dataFields   = Array();
+    foreach ($databaseFields as $dbField) {
+        $dataFields[ strtolower($dbField['name']) ] = 1;
+    }
+    return $dataFields;
+}
 
-function importCsv() {
-	$filename = $_FILES['importFile']['tmp_name'];
-	$res = '';
-	if ($filename) {
-		$delim = $_POST['delimiter'] or ';';
-		$handle = fopen($filename, "r");
-		$data = fgetcsv($handle, 0, $delim);
-		
-		if ($data) {
-			$db = connect();
-			$importFields = shift($data);
-			$databaseFields = json_decode($memberDataFieldsJSON);
-			$dataFields   = Array();
-			$importMap    = Array();
-			foreach ($databaseFields as $dbField) {
-				$dataFields[ $dbField['name'] ] = 1;
-			}
-			
-			foreach ($importFields as $i => $fieldname) {
-				if ($dataFields[ $fieldname]) {
-					$importMap[ $fieldname ] = $i;
-				}
-			}
-				
-			if (count( $importFields) == 0) {
-				throw new Exception("No fields matched");
-			}
-			
-			$importFields = array_keys(  $importMap );
-			
-			$sql = 'BEGIN TRANSACTION;';
-			foreach ( $data as $rowno => $row ) {
-				$sql .= "INSERT INTO members (" . implode($importFields, ", ") . ") VALUES (";
-				$values = Array();
-				foreach ($importFields as $fieldName) {
-					array_push($values, $db->escapeString($row[ $importMap[ $fieldName ]]));
-				}
-				$sql .= implode( $values, ", ") . ");";				
-			}
-			$sql .= "END TRANSACTION";
-			$result = $db->exec($sql);
-			if (!$result)
-        		throw new Exception("Could not insert row $rowno:".$db->lastErrorMsg());							
-		} else {
-			throw new Exception("Invalid import format");
-		}
-	}
-	return $res;
+function importCsv($data) {
+    $db = connect();
+    $importFields = array_shift($data);
+    $importMap    = Array();
+    $dataFields = getMemberFields();
+    foreach ($importFields as $i => $fieldName) {
+        if (isset($dataFields[ strtolower($fieldName) ])) {
+            $importMap[ strtolower($fieldName) ] = $i;
+        }
+    }
+    if (count( $importFields) == 0) {
+        throw new Exception("No fields matched");
+    }
+    $importFields = array_keys(  $importMap );
+    $sql = 'BEGIN TRANSACTION;';
+    foreach ( $data as $rowno => $row ) {
+        $sql .= "INSERT INTO members (" . implode($importFields, ", ") . ") VALUES ('";
+        $values = Array();
+        foreach ($importFields as $fieldName) {
+            array_push($values, $db->escapeString($row[ $importMap[ $fieldName ]]));
+        }
+        $sql .= implode( $values, "', '") . "');";
+    }
+    $sql .= "END TRANSACTION";
+    $result = $db->exec($sql);
+    if (!$result)
+        throw new Exception("Could not insert row $rowno:".$db->lastErrorMsg());
+    return true;
 }
 ?>
