@@ -91,19 +91,38 @@ function deleteMember($id){
 }
 function getMemberFields(){
     require_once 'data.php';
-    $databaseFields = json_decode($memberDataFieldsJSON,$assoc=true);
+    $memberFields = json_decode($memberDataFieldsJSON);
     $dataFields   = Array();
-    foreach ($databaseFields as $dbField) {
-        $dataFields[ strtolower($dbField['name']) ] = 1;
+    foreach ($memberFields as $f){
+        $dataFields[] = $f->name;
     }
     return $dataFields;
+}
+
+function exportCsv(){
+    $file = tmpfile(); //auto-deleted when script ends.
+    $memberFields = getMemberFields();
+    fputcsv($file, $memberFields,';');
+    $db = connect();
+    $sql = 'Select "'.implode($memberFields,'","').'" from members;';
+    $members = $db->query($sql);
+    while ($member = $members->fetchArray(SQLITE3_NUM)) {
+        fputcsv($file, $member,';');
+    }
+    fflush($file);
+    return $file;
 }
 
 function importCsv($data) {
     $db = connect();
     $importFields = array_shift($data);
     $importMap    = Array();
-    $dataFields = getMemberFields();
+    require_once 'data.php';
+    $databaseFields = json_decode($memberDataFieldsJSON,$assoc=true);
+    $dataFields   = Array();
+    foreach ($databaseFields as $dbField) {
+        $dataFields[ strtolower($dbField['name']) ] = 1;
+    }
     foreach ($importFields as $i => $fieldName) {
         if (isset($dataFields[ strtolower($fieldName) ])) {
             $importMap[ strtolower($fieldName) ] = $i;
@@ -115,14 +134,14 @@ function importCsv($data) {
     $importFields = array_keys(  $importMap );
     $sql = 'BEGIN TRANSACTION;';
     foreach ( $data as $rowno => $row ) {
-        $sql .= "INSERT INTO members (" . implode($importFields, ", ") . ") VALUES ('";
         $values = Array();
         foreach ($importFields as $fieldName) {
             array_push($values, $db->escapeString($row[ $importMap[ $fieldName ]]));
         }
-        $sql .= implode( $values, "', '") . "');";
+        $sql .= "INSERT INTO members ('" . implode($importFields, "', '") . "') VALUES ('" . implode( $values, "', '") . "');";
     }
     $sql .= "END TRANSACTION";
+//     exit($sql);
     $result = $db->exec($sql);
     if (!$result)
         throw new Exception("Could not insert row $rowno:".$db->lastErrorMsg());

@@ -39,7 +39,7 @@ function init(){
     refreshMemberlist();
     apiCall("getMemberFields",createMemberForms);
     $('#editMember').jqm();
-    $('#importCsvDiv').jqm().jqmAddTrigger("#importCsvButton");
+    $('#importCsvDiv').jqm().jqmAddTrigger("#importExportButton");
 }
 function createMemberForms(data){
     var memberFields = JSON.parse(data);
