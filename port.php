@@ -2,26 +2,28 @@
 require_once "backend/database.php";
 
 if (isset($_FILES['importFile'])) {
-    $delim = isset($_POST['delimiter']) ? $_POST['delimiter'] : ';';
-    $rawData = file ($_FILES['importFile']['tmp_name']);
-    $data = array ();
-    foreach($rawData as $line){
-        $data[] = str_getcsv(iconv('ISO-8859-15','UTF-8//TRANSLIT',$line), $delim);
-    }
-    if (count($data)) {
-        if (importCsv($data)){
-            exit('<meta http-equiv="refresh" content="0; url=./">');
-        } else {
-            exit("No success.");
+    try {
+        $delim = isset($_POST['delimiter']) ? $_POST['delimiter'] : ';';
+        $rawData = file ($_FILES['importFile']['tmp_name']);
+        $data = array ();
+        foreach($rawData as $line){
+            $data[] = str_getcsv(iconv('ISO-8859-15','UTF-8//TRANSLIT',$line), $delim);
         }
-    } else {
-        throw new Exception("Invalid import format");
+        if (count($data)) {
+            if (importCsv($data)){
+                exit('<meta http-equiv="refresh" content="0; url=./">');
+            } else {
+                exit("No success.");
+            }
+        } else {
+            throw new Exception("Invalid import format");
+        }
+    } catch (Exception $e){
+        exit($e->getMessage());
     }
 } else if($_REQUEST["action"]=="export"){
-    $file = exportCsv();
-    rewind($file);
-    $fileStat = fstat($file);
-
+    $csv = exportCsv();
+    $csv = iconv('UTF-8','ISO-8859-15//TRANSLIT',$csv);
     header('Content-Description: File Transfer');
     header('Content-Type: text/csv');
     header('Content-Disposition: attachment; filename='.date('Y-m-d H:i').' Member database.csv');
@@ -29,13 +31,10 @@ if (isset($_FILES['importFile'])) {
     header('Expires: 0');
     header('Cache-Control: private');
     header('Pragma: public');
-    header('Content-Length: ' . $fileStat["size"]);
+    header('Content-Length: ' . mb_strlen($csv, '8bit')/*$fileStat["size"]*/);
     ob_clean();
-    while (($buffer = fgets($file)) !== false) {
-        echo iconv('UTF-8','ISO-8859-15//TRANSLIT',$buffer);
-    }
+    echo $csv;
     flush();
-    fpassthru($file);
 }
 
 ?>

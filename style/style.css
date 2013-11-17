@@ -1,19 +1,53 @@
 label{
-	width:125px;
-	float:left;
+    width:125px;
+    float:left;
 }
 #addMember{
     display:none;
+}
+body{
+    margin:0;
+}
+#head{
+    position:fixed;
+    top:0;
+    left:0;
+    padding: 5px 10px;
+    width:100%;
+    height:40px;
+    background-color:black;
+    color:white;
+    vertical-align:middle;
+    z-index:2;
+}
+#head h1 {
+    display:inline-block;
+    margin:0;
+    margin-right:10px;
+}
+#menu{
+    display:inline-block;
 }
 #menu>a{
     display:inline-block;
     padding:3px 5px;
     background-color:#eef;
+    text-decoration:none;
+    color:black;
     border:1px solid black;
 }
 #menu>a:hover{
     background-color:#ddf;
 }
+
+#content{
+    position:absolute;
+    top:50px;
+    margin:8px 0px;
+}
 a{
     color:blue;
+}
+:invalid {
+  background-color: #FEE;
 }

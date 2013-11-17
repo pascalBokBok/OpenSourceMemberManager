@@ -34,7 +34,7 @@ $memberDataFieldsJSON = '[
             "required":false,
             "editable":true,
             "caption":"Email address",
-            "properties":["unique"]
+            "properties":[]
         },{
             "name": "street",
             "type": "text",
@@ -55,6 +55,13 @@ $memberDataFieldsJSON = '[
             "required":false,
             "editable":true,
             "caption":"City",
+            "properties":[]
+        },{
+            "name": "country",
+            "type": "text",
+            "required":false,
+            "editable":true,
+            "caption":"Country",
             "properties":[]
         },{
             "name": "group",
@@ -142,7 +149,6 @@ $fieldType2sqliteType = array("text"=>"text",
 /** assuming we are dealing with trusted input here. */
 function createDatabaseTables($structJSON, $typeTrans){
     $struct = json_decode($structJSON);
-    var_dump($structJSON);
     $sql = "";
     foreach ($struct->data_structures as $table){
         $sql .= createDatabaseTable($table, $typeTrans);

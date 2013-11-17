@@ -20,6 +20,10 @@ function connect(){
     }
 }
 
+function returnDBError($db){
+  return 'Database error '.$db->lastErrorCode().': '.$db->lastErrorMsg();
+}
+
 function getMembers($id=null){
     $db = connect();
     $q="Select * from members";
@@ -27,7 +31,7 @@ function getMembers($id=null){
         $q .= ' where id='.(int)$id;
     $res = $db->query($q);
     if ($res==false){
-        throw new Exception('Could not get memberlist:'.$db->lastErrorMsg());
+        throw new Exception("Could not get memberlist. \n".returnDBError($db));
     }
     $out = array();
     while ($row = $res->fetchArray(SQLITE3_ASSOC)) {
@@ -51,7 +55,7 @@ function addNewMember($member){
     $result = $db->exec("insert  into Members(".implode($columnNames,',').") 
         values (".implode($fieldValues,',').")");
     if (!$result)
-        throw new Exception("Could not add member");
+        throw new Exception("Could not add member. \n".returnDBError($db));
 }
 
 function updateMember($member){
@@ -73,7 +77,7 @@ function updateMember($member){
     $sql = "UPDATE members SET ".implode($data,', ')." where id=".$id;
     $result = $db->exec($sql);
     if (!$result)
-        throw new Exception("Could not execute update member");
+        throw new Exception("Could not execute update member. \n".returnDBError($db));
     if ($db->changes()==0){
         throw new Exception("No change in database");
     }
@@ -84,7 +88,7 @@ function deleteMember($id){
     $id = (int) $id;
     $result = $db->exec("delete from Members where id=".$id);
     if (!$result)
-        throw new Exception("Could not execute 'delete member':".$db->lastErrorMsg());
+        throw new Exception("Could not delete member. \n".returnDBError($db));
     if ($db->changes()==0){
         throw new Exception("No change in database");
     }
@@ -99,18 +103,24 @@ function getMemberFields(){
     return $dataFields;
 }
 
+function str_putcsv($input, $delimiter = ',', $enclosure = '"') {
+    $fp = fopen('php://temp', 'r+');
+    fputcsv($fp, $input, $delimiter, $enclosure);
+    rewind($fp);
+    $data = fread($fp, 9999999);
+    fclose($fp);
+    return $data;
+}
 function exportCsv(){
-    $file = tmpfile(); //auto-deleted when script ends.
     $memberFields = getMemberFields();
-    fputcsv($file, $memberFields,';');
+    $csv = str_putcsv($memberFields,';');
     $db = connect();
     $sql = 'Select "'.implode($memberFields,'","').'" from members;';
     $members = $db->query($sql);
     while ($member = $members->fetchArray(SQLITE3_NUM)) {
-        fputcsv($file, $member,';');
+        $csv .= str_putcsv($member,';');
     }
-    fflush($file);
-    return $file;
+    return $csv;
 }
 
 function importCsv($data) {
@@ -132,19 +142,18 @@ function importCsv($data) {
         throw new Exception("No fields matched");
     }
     $importFields = array_keys(  $importMap );
-    $sql = 'BEGIN TRANSACTION;';
-    foreach ( $data as $rowno => $row ) {
+    $sql = '';
+    foreach ( $data as $row ) {
         $values = Array();
         foreach ($importFields as $fieldName) {
-            array_push($values, $db->escapeString($row[ $importMap[ $fieldName ]]));
+            $escapedValue = isset($row[$importMap[ $fieldName ]]) ? $db->escapeString($row[ $importMap[ $fieldName ]]) : '';
+            array_push($values, $escapedValue);
         }
         $sql .= "INSERT INTO members ('" . implode($importFields, "', '") . "') VALUES ('" . implode( $values, "', '") . "');";
     }
-    $sql .= "END TRANSACTION";
-//     exit($sql);
     $result = $db->exec($sql);
     if (!$result)
-        throw new Exception("Could not insert row $rowno:".$db->lastErrorMsg());
+        throw new Exception("Could not import. \n".returnDBError($db));
     return true;
 }
 ?>

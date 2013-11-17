@@ -11,16 +11,22 @@
     <script type="text/javascript" src="script/jqModal.js"></script>
     </head>
     <body>
-        <h1>Open Source Member Database</h1>
-        <div id="menu">
-            <a href="javascript:void(0)" onclick="$('#addMember').toggle()">Add member</a>
-            <a href="javascript:void(0)" id="importExportButton">Import/export</a>
+        <div id="head">
+            <h1>Open Source Member Database</h1>
+            <div id="menu">
+                <a href="javascript:void(0)" id="addMemberButton">Add member</a>
+                <a href="javascript:void(0)" id="importExportButton">Import/export</a>
+            </div>
         </div>
-        <div id="addMember"></div>
-        <div id="editMember" class="jqmWindow"></div>
-        <h2>Members</h2>
-        <ul id="memberList"></ul>
-        
+        <div id="content">
+            <div id="addMember" class="jqmWindow"><h2>Add new member</h2></div>
+            <div id="editMember" class="jqmWindow"></div>
+            <h2>Members</h2>
+            <ul id="memberList"></ul>
+            <hr>
+            <p align="center"><a href="https://github.com/pascalBokBok/OpenSourceMemberManager" target="_blank">Open Source Member Manager</a></p>
+        </div><!-- end content-->
+        <!-- others -->
         <div id="importCsvDiv" class="jqmWindow" style="display:none">
             <p>Imports a CSV file with fieldsnames on first row, ";" as separator, "\" as escape-character. File encoding: ISO 8859-15</p>
             <form action="port.php?action=import" method="post" enctype="multipart/form-data">
@@ -30,7 +36,5 @@
             </form>
             <a href="port.php?action=export">Export as CSV.</a>
         </div>
-    <hr>
-    <p align="center"><a href="https://github.com/pascalBokBok/OpenSourceMemberManager" target="_blank">Open Source Member Manager</a></p>
     </body>
 </html>

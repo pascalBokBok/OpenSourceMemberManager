@@ -31,13 +31,40 @@ function deleteMember(id){
 function renderMemberList(data){
     var items = [];
     $.each(data, function(key, val) {
-        items.push('<li id="' + key + '">' + val["name"] + ' ' + val["surname"] + ' - '+val["email_address"]+' <a href="javascript:void(0)" onclick="editMemberInitiate('+val["id"]+')">✎</a> <a href="javascript:void(0)" onclick="deleteMember('+val["id"]+')">❌</a></li>');
+        items.push('<tr id="' + key + '"><td>' + 
+          val["name"] + '</td><td>' + 
+          val["surname"] + '</td><td>' +
+          val["email_address"] + '</td><td>' +
+          val["street"] + '</td><td>' +
+          val["postal_code"] + '</td><td>' +
+          val["city"] + '</td><td>' +
+          val["country"] + '</td><td>' +
+          val["group"] + '</td><td>' +
+          val["telephone"] + '</td><td>' +
+          val["last_payment_year"] + '</td><td>' +
+          '<a href="javascript:void(0)" onclick="editMemberInitiate('+val["id"]+')">✎</a> <a href="javascript:void(0)" onclick="deleteMember('+val["id"]+')">❌</a></td></tr>');
     });
-    $('#memberList').replaceWith($('<ul/>',{id:'memberList',html: items.join('')}));
+    $('#memberList').replaceWith($('<table/>',{id:'memberList',html: items.join('')}));
 }
+
+// function renderMemberList(data){
+//     var items = [];
+//     $.each(data, function(key, memberValues) {
+//         var myHtml = "";
+//         for (var i=0;i<count(memberValues);i++)){
+//             myHtml += "<td>"+memberValues[]
+//         }
+//         return "<>"
+//         items.push('<li id="' + key + '">' + val["name"] + ' ' + val["surname"] + ' - '+val["email_address"]+' <a href="javascript:void(0)" onclick="editMemberInitiate('+val["id"]+')">✎</a> <a href="javascript:void(0)" onclick="deleteMember('+val["id"]+')">❌</a></li>');
+//     });
+//     $('#memberList').replaceWith($('<ul/>',{id:'memberList',html: items.join('')}));
+// }
+
 function init(){
     refreshMemberlist();
     apiCall("getMemberFields",createMemberForms);
+    $('#addMemberButton').click(addMemberForm);
+    $('#addMember').jqm();
     $('#editMember').jqm();
     $('#importCsvDiv').jqm().jqmAddTrigger("#importExportButton");
 }
@@ -46,7 +73,7 @@ function createMemberForms(data){
     //Create and Initiate new member form.
     $('#addMember').append(createForm('newMemberForm',memberFields));
     $('#newMemberForm').submit(function(){
-        apiCall('addNewMember',afterFormSubmit,$('#newMemberForm').serializeArray());
+        apiCall('addNewMember',afterAddMemberSubmit,$('#newMemberForm').serializeArray());
         return false;
     });
     //Create edit member form.
@@ -56,12 +83,16 @@ function createMemberForms(data){
         return false;
     });
 }
-function afterFormSubmit(){
+function afterAddMemberSubmit(){
     refreshMemberlist();
     $('#newMemberForm').trigger('reset');
-    $('#newMemberForm').find('input:enabled').first().focus();
+    $('#newMemberForm').find('input:visible:enabled:first').focus();
 }
 
+function addMemberForm(){
+    $('#addMember').jqmShow();
+    $('#addMember input:visible:first').trigger('focus');
+}
 function editMemberInitiate(id){
     var fillInMemberData = function(data) {
         for(var i in memberStruct){
