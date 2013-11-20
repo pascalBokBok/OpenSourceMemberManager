@@ -43,7 +43,7 @@ body{
 #content{
     position:absolute;
     top:50px;
-    margin:8px 0px;
+    margin:0px 8px;
 }
 a{
     color:blue;

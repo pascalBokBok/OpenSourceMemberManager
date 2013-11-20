@@ -95,6 +95,7 @@ function addMemberForm(){
 }
 function editMemberInitiate(id){
     var fillInMemberData = function(data) {
+        $('#editMemberForm').get(0).reset(); //some inputs are not set without the reset.
         for(var i in memberStruct){
             var el = memberStruct[i];
             var input = $('#editMemberForm>:input[name='+el.name+']');
