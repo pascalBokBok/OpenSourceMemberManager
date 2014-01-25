@@ -2,7 +2,7 @@
 <html>
     <head>
     <meta content="text/html; charset=UTF-8" http-equiv="content-type">
-    <script src="http://code.jquery.com/jquery-1.9.1.min.js">
+    <script src="https://code.jquery.com/jquery-1.9.1.min.js">
 // 		For privacy reasons you should consider downloading your own copy from jquery.com/
     </script>
     <link rel="stylesheet" href="style/style.css">
