@@ -9,7 +9,8 @@ function initialize($db){
 }
 
 function connect(){
-    if ($db = new SQLite3('db.sqlite3',SQLITE3_OPEN_READWRITE | SQLITE3_OPEN_CREATE)){
+    /** DB path is relative to api.php */
+    if ($db = new SQLite3('backend/db.sqlite3',SQLITE3_OPEN_READWRITE | SQLITE3_OPEN_CREATE)){
         $tableCheck = $db->query("SELECT name FROM sqlite_master WHERE name='members'");
         if ($tableCheck->fetchArray() === FALSE){
             initialize($db);
