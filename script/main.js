@@ -47,19 +47,6 @@ function renderMemberList(data){
     $('#memberList').replaceWith($('<table/>',{id:'memberList',html: items.join('')}));
 }
 
-// function renderMemberList(data){
-//     var items = [];
-//     $.each(data, function(key, memberValues) {
-//         var myHtml = "";
-//         for (var i=0;i<count(memberValues);i++)){
-//             myHtml += "<td>"+memberValues[]
-//         }
-//         return "<>"
-//         items.push('<li id="' + key + '">' + val["name"] + ' ' + val["surname"] + ' - '+val["email_address"]+' <a href="javascript:void(0)" onclick="editMemberInitiate('+val["id"]+')">✎</a> <a href="javascript:void(0)" onclick="deleteMember('+val["id"]+')">❌</a></li>');
-//     });
-//     $('#memberList').replaceWith($('<ul/>',{id:'memberList',html: items.join('')}));
-// }
-
 function init(){
     refreshMemberlist();
     apiCall("getMemberFields",createMemberForms);
@@ -68,6 +55,11 @@ function init(){
     $('#editMember').jqm();
     $('#importCsvDiv').jqm().jqmAddTrigger("#importExportButton");
 }
+function authenticate(){
+    apiCall("authenticate",init,{password:prompt("What is your password?")})
+}
+$(document).ready(authenticate);
+
 function createMemberForms(data){
     var memberFields = JSON.parse(data);
     //Create and Initiate new member form.
@@ -146,5 +138,3 @@ function createForm(id,elements){
     form.append('<input type="submit">');
     return form;
 }
-
-$(document).ready(init);
