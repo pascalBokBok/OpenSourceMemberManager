@@ -54,12 +54,31 @@ function init(){
     $('#addMember').jqm();
     $('#editMember').jqm();
     $('#importCsvDiv').jqm().jqmAddTrigger("#importExportButton");
+    //always do a check if data is well protected.
+    testDatabaseProtection();
 }
 function authenticate(){
     apiCall("authenticate",init,{password:prompt("What is your password?")})
 }
 $(document).ready(authenticate);
 
+function testDatabaseProtection(){
+    /** The database is in a subfolder of the public interface folder. It is protected by a htaccess file.
+        To ensure privacy we test if the protection works and alert if it is not the case.
+     */
+    $.ajax({
+        type: "GET",
+        url: "backend/db.sqlite3",
+        data: '',
+        complete: function(e, xhr, settings){
+            if(e.status === 403){
+                console.log('All is well, the database is protected by the webserver.');
+            }else {
+                alert("The database is not properly protected by the webserver. There is a problem with htaccess settings.");
+            }
+        }
+    });
+}
 function createMemberForms(data){
     var memberFields = JSON.parse(data);
     //Create and Initiate new member form.
