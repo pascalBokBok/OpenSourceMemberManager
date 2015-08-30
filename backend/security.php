@@ -1,6 +1,9 @@
 <?php
 
 function authenticate(){
+    //disabled for now; use htaccess
+    $_SESSION["authenticated"] = true;
+    return;
     if ($_GET["password"]=="hardcodedsecurity:-)"){
         $_SESSION["authenticated"] = true;
     } else {
