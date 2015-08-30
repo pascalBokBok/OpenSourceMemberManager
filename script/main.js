@@ -11,7 +11,9 @@ function apiCall(action, func, args){
     }
     var handler = function (dataJSON){
         var data = JSON.parse(dataJSON);
-        if (data.error) {
+        if (data.error_code == 401){ //unauthorized
+            authenticate();
+        } else if (data.error) {
             alert(data.error_msg);
         } else {
             func(data["payload"]);
@@ -47,10 +49,7 @@ function renderMemberList(data){
     });
     $('#memberList').replaceWith($('<table/>',{id:'memberList',html: items.join('')}));
 }
-
-function init(){
-    refreshMemberlist();
-    apiCall("getMemberFields",createMemberForms);
+function buildPage(){
     $('#addMemberButton').click(addMemberForm);
     $('#addMember').jqm();
     $('#editMember').jqm();
@@ -58,10 +57,20 @@ function init(){
     //always do a check if data is well protected.
     testDatabaseProtection();
 }
-function authenticate(){
-    apiCall("authenticate",init,{password:prompt("What is your password?")});
+
+function refreshData(){
+    refreshMemberlist();
+    apiCall("getMemberFields",createMemberForms);
 }
-$(document).ready(authenticate);
+
+function init(){
+    buildPage();
+    refreshData();
+}
+function authenticate(){
+    apiCall("authenticate",refreshData,{password:prompt("What is your password?")});
+}
+$(document).ready(apiCall('testAuthenticated',init));
 
 function testDatabaseProtection(){
     /** The database is in a subfolder of the public interface folder. It is protected by a htaccess file.

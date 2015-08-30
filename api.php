@@ -15,7 +15,7 @@ try {
     }
     
     if (!isset($_SESSION["authenticated"]) or $_SESSION["authenticated"]!=true){
-        Throw new Exception("You are not logged in.");
+        Throw new Exception("You are not logged in.",401); //code 401 (unauthorized) copied from http protocol
     }
     require_once "backend/database.php";
     
@@ -47,6 +47,9 @@ try {
                 break;
             case "importCsv":
                 $payload = importCsv();
+                break;
+            case "testAuthenticated":
+                $payload = true;
                 break;
             default:
                 throw new Exception("Action not known");
