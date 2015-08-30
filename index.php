@@ -12,7 +12,7 @@
     </head>
     <body>
         <div id="head">
-            <h1>Open Source Member Database</h1>
+            <h1>Open Source Member Manager</h1>
             <div id="menu">
                 <a href="javascript:void(0)" id="addMemberButton">Add member</a>
                 <a href="javascript:void(0)" id="importExportButton">Import/export</a>
