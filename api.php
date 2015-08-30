@@ -10,11 +10,8 @@ if (!isset($_GET["action"])){
 $action = $_REQUEST["action"];
 try {    
     if ($action=="authenticate"){
-        if ($_GET["password"]=="hardcodedsecurity:-)"){
-            $_SESSION["authenticated"] = true;
-        } else {
-            throw new Exception ("Incorrect login");
-        }
+        require_once "backend/security.php";
+        authenticate();
     }
     
     if (!isset($_SESSION["authenticated"]) or $_SESSION["authenticated"]!=true){
@@ -41,8 +38,8 @@ try {
                 deleteMember($_GET['id']);
                 break;
             case "getMemberFields":
-                require_once 'backend/data.php';
-                $payload = $memberDataFieldsJSON;
+                $dataStructure = json_decode(file_get_contents("backend/data_structure.json"));
+                $payload = $dataStructure->data_structures->members;
                 break;
             case "getMember":
                 $members = getMembers($_GET['id']);

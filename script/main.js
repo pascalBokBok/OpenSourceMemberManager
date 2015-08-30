@@ -32,6 +32,7 @@ function renderMemberList(data){
     var items = [];
     $.each(data, function(key, val) {
         items.push('<tr id="' + key + '"><td>' + 
+        '<a href="javascript:void(0)" onclick="editMemberInitiate('+val["id"]+')">✎</a> </td><td>' + 
           val["name"] + '</td><td>' + 
           val["surname"] + '</td><td>' +
           val["email_address"] + '</td><td>' +
@@ -42,7 +43,7 @@ function renderMemberList(data){
           val["group"] + '</td><td>' +
           val["telephone"] + '</td><td>' +
           val["last_payment_year"] + '</td><td>' +
-          '<a href="javascript:void(0)" onclick="editMemberInitiate('+val["id"]+')">✎</a> <a href="javascript:void(0)" onclick="deleteMember('+val["id"]+')">❌</a></td></tr>');
+          '<a href="javascript:void(0)" onclick="deleteMember('+val["id"]+')">❌</a></td></tr>');
     });
     $('#memberList').replaceWith($('<table/>',{id:'memberList',html: items.join('')}));
 }
@@ -58,7 +59,7 @@ function init(){
     testDatabaseProtection();
 }
 function authenticate(){
-    apiCall("authenticate",init,{password:prompt("What is your password?")})
+    apiCall("authenticate",init,{password:prompt("What is your password?")});
 }
 $(document).ready(authenticate);
 
