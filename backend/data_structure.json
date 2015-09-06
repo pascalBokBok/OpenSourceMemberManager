@@ -1,159 +1,155 @@
 {
     "data_structures": {
-        "core":[
-            {
-                "name": "users",
-                "caption": "Users",
-                "identifier_field": "email_address",
-                "caption_fields": ["name"],
-                "fields": [
-                    {
-                        "name": "email_address",
-                        "type": "email",
-                        "required":true,
-                        "editable":true,
-                        "caption":"Email",
-                        "properties":[]
-                    },{
-                        "name": "password",
-                        "type": "password",
-                        "required":true,
-                        "editable":true,
-                        "caption":"Password",
-                        "properties":[]
-                    },{
-                        "name": "name",
-                        "type": "text",
-                        "required":true,
-                        "editable":true,
-                        "caption":"Name",
-                        "properties":[]
-                    },{
-                        "name": "privileges",
-                        "type": "text",
-                        "required":true,
-                        "editable":true,
-                        "caption":"Privileges",
-                        "properties":[]
-                    }
-                ]
-            },{
-                "name": "privileges",
-                "caption": "Privileges",
-                "identifier_field": "name",
-                "caption_fields": ["name"],
-                "fields": [
-                    {
-                        "name": "name",
-                        "type": "text",
-                        "required":true,
-                        "editable":true,
-                        "caption":"Name",
-                        "properties":[]
-                    },{
-                        "name": "description",
-                        "type": "text",
-                        "required":true,
-                        "editable":true,
-                        "caption":"Description",
-                        "properties":[]
-                    }
-                ],
-                "default_data": [
-                    ["members_access", "See members list"],
-                    ["members_management", "Manage the member list"],
-                    ["user_management", "Manage the users of this system"]
-                ]
-            }
-        ],
-        "members": [
-            {
-                "name": "members",
-                "caption":"Members",
-                "identifier_field" : "id",
-                "caption_fields" : ["name","surname"],
-                "fields" : [
-                    {
-                        "name": "id",
-                        "type": "integer",
-                        "required":true,
-                        "editable":false,
-                        "caption":"ID",
-                        "properties":["autoincrement"]
-                    },{
-                        "name": "name",
-                        "type": "text",
-                        "required":true,
-                        "editable":true,
-                        "caption":"Name",
-                        "properties":[]
-                    },{
-                        "name": "surname",
-                        "type": "text",
-                        "required":true,
-                        "editable":true,
-                        "caption":"Surname",
-                        "properties":[]
-                    },{
-                        "name": "email_address",
-                        "type": "email",
-                        "required":false,
-                        "editable":true,
-                        "caption":"Email address",
-                        "properties":[]
-                    },{
-                        "name": "street",
-                        "type": "text",
-                        "required":false,
-                        "editable":true,
-                        "caption":"Street",
-                        "properties":[]
-                    },{
-                        "name": "postal_code",
-                        "type": "text",
-                        "required":false,
-                        "editable":true,
-                        "caption":"Postal code",
-                        "properties":[]
-                    },{
-                        "name": "city",
-                        "type": "text",
-                        "required":false,
-                        "editable":true,
-                        "caption":"City",
-                        "properties":[]
-                    },{
-                        "name": "country",
-                        "type": "text",
-                        "required":false,
-                        "editable":true,
-                        "caption":"Country",
-                        "properties":[]
-                    },{
-                        "name": "group",
-                        "type": "select",
-                        "select":["EPP","AIP"],
-                        "required":false,
-                        "editable":true,
-                        "caption":"Group",
-                        "properties":[]
-                    },{
-                        "name": "telephone",
-                        "type": "text",
-                        "required":false,
-                        "editable":true,
-                        "caption":"Telephone",
-                        "properties":[]
-                    },{
-                        "name": "last_payment_year",
-                        "type": "text",
-                        "required":false,
-                        "editable":true,
-                        "caption":"Last Payment year",
-                        "properties":[]
-                    }
-                ]
-            }
-        ]
+        "users":{
+            "name": "users",
+            "caption": "Users",
+            "identifier_field": "email_address",
+            "caption_fields": ["name"],
+            "fields": [
+                {
+                    "name": "email_address",
+                    "type": "email",
+                    "required":true,
+                    "editable":true,
+                    "caption":"Email",
+                    "properties":[]
+                },{
+                    "name": "password",
+                    "type": "password",
+                    "required":true,
+                    "editable":true,
+                    "caption":"Password",
+                    "properties":[]
+                },{
+                    "name": "name",
+                    "type": "text",
+                    "required":true,
+                    "editable":true,
+                    "caption":"Name",
+                    "properties":[]
+                },{
+                    "name": "privileges",
+                    "type": "text",
+                    "required":true,
+                    "editable":true,
+                    "caption":"Privileges",
+                    "properties":[]
+                }
+            ]
+        },"privileges":{
+            "name": "privileges",
+            "caption": "Privileges",
+            "identifier_field": "name",
+            "caption_fields": ["name"],
+            "fields": [
+                {
+                    "name": "name",
+                    "type": "text",
+                    "required":true,
+                    "editable":true,
+                    "caption":"Name",
+                    "properties":[]
+                },{
+                    "name": "description",
+                    "type": "text",
+                    "required":true,
+                    "editable":true,
+                    "caption":"Description",
+                    "properties":[]
+                }
+            ],
+            "default_data": [
+                ["members_access", "See members list"],
+                ["members_management", "Manage the member list"],
+                ["user_management", "Manage the users of this system"]
+            ]
+        },
+        "members": {
+            "name": "members",
+            "caption":"Members",
+            "identifier_field" : "id",
+            "caption_fields" : ["name","surname"],
+            "fields" : [
+                {
+                    "name": "id",
+                    "type": "integer",
+                    "required":true,
+                    "editable":false,
+                    "caption":"ID",
+                    "properties":["autoincrement"]
+                },{
+                    "name": "name",
+                    "type": "text",
+                    "required":true,
+                    "editable":true,
+                    "caption":"Name",
+                    "properties":[]
+                },{
+                    "name": "surname",
+                    "type": "text",
+                    "required":true,
+                    "editable":true,
+                    "caption":"Surname",
+                    "properties":[]
+                },{
+                    "name": "email_address",
+                    "type": "email",
+                    "required":false,
+                    "editable":true,
+                    "caption":"Email address",
+                    "properties":[]
+                },{
+                    "name": "street",
+                    "type": "text",
+                    "required":false,
+                    "editable":true,
+                    "caption":"Street",
+                    "properties":[]
+                },{
+                    "name": "postal_code",
+                    "type": "text",
+                    "required":false,
+                    "editable":true,
+                    "caption":"Postal code",
+                    "properties":[]
+                },{
+                    "name": "city",
+                    "type": "text",
+                    "required":false,
+                    "editable":true,
+                    "caption":"City",
+                    "properties":[]
+                },{
+                    "name": "country",
+                    "type": "text",
+                    "required":false,
+                    "editable":true,
+                    "caption":"Country",
+                    "properties":[]
+                },{
+                    "name": "group",
+                    "type": "select",
+                    "select":["EPP","AIP"],
+                    "required":false,
+                    "editable":true,
+                    "caption":"Group",
+                    "properties":[]
+                },{
+                    "name": "telephone",
+                    "type": "text",
+                    "required":false,
+                    "editable":true,
+                    "caption":"Telephone",
+                    "properties":[]
+                },{
+                    "name": "last_payment_year",
+                    "type": "text",
+                    "required":false,
+                    "editable":true,
+                    "caption":"Last Payment year",
+                    "properties":[]
+                }
+            ]
+        }
     }
 }

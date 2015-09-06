@@ -1,9 +1,9 @@
 <?php
 
 function initialize($db){
-    require_once 'data.php';
-    $db_schema_members = createDatabaseTables($dataJSON,$fieldType2sqliteType);
-    if ($db->exec($db_schema_members) ===FALSE){
+    require_once "backend/SchemaLoader.php";
+    $dbSchema = SchemaLoader::createDatabaseSchemaSQL();
+    if ($db->exec($dbSchema) ===FALSE){
         throw new Exception ("Initializing database schema failed: ".$db->lastErrorMsg());
     }
 }
@@ -42,9 +42,10 @@ function getMembers($id=null){
 }
 
 function addNewMember($member){
+    require_once "backend/SchemaLoader.php";
     $db = connect();
-    require_once 'data.php';
-    $memberFields = json_decode($memberDataFieldsJSON);
+    $schema = SchemaLoader::getSchema();
+    $memberFields = $schema->data_structures->members->fields;
     $columnNames = array();
     $fieldValues = array();
     foreach ($memberFields as $f){
@@ -62,8 +63,9 @@ function addNewMember($member){
 function updateMember($member){
     $db = connect();
     $id = (int) $member["id"];
-    require_once 'data.php';
-    $memberFields = json_decode($memberDataFieldsJSON);
+    require_once "backend/SchemaLoader.php";
+    $schema = SchemaLoader::getSchema();
+    $memberFields = $schema->data_structures->members->fields;
     $data = array();
     foreach ($memberFields as $f){
         if ($f->name == 'id')
@@ -95,8 +97,9 @@ function deleteMember($id){
     }
 }
 function getMemberFields(){
-    require_once 'data.php';
-    $memberFields = json_decode($memberDataFieldsJSON);
+    require_once "backend/SchemaLoader.php";
+    $schema = SchemaLoader::getSchema();
+    $memberFields = $schema->data_structures->members->fields;
     $dataFields   = Array();
     foreach ($memberFields as $f){
         $dataFields[] = $f->name;
@@ -128,8 +131,9 @@ function importCsv($data) {
     $db = connect();
     $importFields = array_shift($data);
     $importMap    = Array();
-    require_once 'data.php';
-    $databaseFields = json_decode($memberDataFieldsJSON,$assoc=true);
+    require_once "backend/SchemaLoader.php";
+    $schema = SchemaLoader::getSchema($assoc=true);
+    $databaseFields = $schema["data_structures"]["members"]["fields"];
     $dataFields   = Array();
     foreach ($databaseFields as $dbField) {
         $dataFields[ strtolower($dbField['name']) ] = 1;

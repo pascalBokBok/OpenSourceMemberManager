@@ -3,7 +3,7 @@
     Therefore it acts as a gatekeeper.
  */
 session_start();
-$response = array("payload"=>null);
+$response = array('error'=>false,'payload'=>null);
 if (!isset($_GET["action"])){
     throw new Exception("You need to specify an action.");
 }
@@ -38,8 +38,9 @@ try {
                 deleteMember($_GET['id']);
                 break;
             case "getMemberFields":
-                $dataStructure = json_decode(file_get_contents("backend/data_structure.json"));
-                $payload = $dataStructure->data_structures->members;
+                require_once "backend/SchemaLoader.php";
+                $schema = SchemaLoader::getSchema();
+                $payload = $schema->data_structures->members->fields;
                 break;
             case "getMember":
                 $members = getMembers($_GET['id']);
@@ -55,7 +56,6 @@ try {
                 throw new Exception("Action not known");
         }
     }
-    $response["error"] = false; 
 } catch (Exception $e){
     $response["error"] = true;
     $response["error_msg"] = $e->getMessage();
