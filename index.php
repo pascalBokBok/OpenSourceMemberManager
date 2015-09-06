@@ -14,8 +14,8 @@
         <div id="head">
             <h1>Open Source Member Manager</h1>
             <div id="menu">
-                <a href="javascript:void(0)" id="addMemberButton">Add member</a>
-                <a href="javascript:void(0)" id="importExportButton">Import/export</a>
+                <span class="entry" id="addMemberButton">Add member</span>
+                <span class="entry" id="importExportButton">Import/export</span>
             </div>
         </div>
         <div id="content">

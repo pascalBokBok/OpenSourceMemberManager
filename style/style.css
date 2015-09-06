@@ -28,15 +28,15 @@ body{
 #menu{
     display:inline-block;
 }
-#menu>a{
+#menu>.entry{
     display:inline-block;
     padding:3px 5px;
     background-color:#eef;
-    text-decoration:none;
     color:black;
     border:1px solid black;
+    cursor:pointer;
 }
-#menu>a:hover{
+#menu>.entry:hover{
     background-color:#ddf;
 }
 
@@ -48,6 +48,9 @@ body{
 a{
     color:blue;
 }
-:invalid {
+input {
+    border: 1px solid gray;
+}
+input:invalid,select:invalid {
   background-color: #FEE;
 }
