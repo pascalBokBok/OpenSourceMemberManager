@@ -68,7 +68,7 @@ function init(){
     refreshData();
 }
 function authenticate(){
-    apiCall("authenticate",refreshData,{password:prompt("What is your password?")});
+    apiCall("authenticate",refreshData,{/*password:prompt("What is your password?")*/});
 }
 $(document).ready(apiCall('testAuthenticated',init));
 
@@ -89,8 +89,7 @@ function testDatabaseProtection(){
         }
     });
 }
-function createMemberForms(data){
-    var memberFields = JSON.parse(data);
+function createMemberForms(memberFields){
     //Create and Initiate new member form.
     $('#addMember').append(createForm('newMemberForm',memberFields));
     $('#newMemberForm').submit(function(){
