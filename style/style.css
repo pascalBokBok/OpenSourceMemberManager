@@ -8,6 +8,10 @@ label{
 body{
     margin:0;
 }
+table{
+    font:inherit;
+}
+
 #head{
     position:fixed;
     top:0;

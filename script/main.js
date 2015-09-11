@@ -53,7 +53,7 @@ function buildPage(){
     $('#addMemberButton').click(addMemberForm);
     $('#addMember').jqm();
     $('#editMember').jqm();
-    $('#importCsvDiv').jqm().jqmAddTrigger("#importExportButton");
+    $('#importCsv').jqm().jqmAddTrigger("#importExportButton");
     //always do a check if data is well protected.
     testDatabaseProtection();
 }

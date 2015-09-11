@@ -19,15 +19,15 @@
             </div>
         </div>
         <div id="content">
-            <div id="addMember" class="jqmWindow"><h2>Add new member</h2></div>
-            <div id="editMember" class="jqmWindow"></div>
             <h2>Members</h2>
             <ul id="memberList"></ul>
             <hr>
             <p align="center"><a href="https://github.com/pascalBokBok/OpenSourceMemberManager" target="_blank">Open Source Member Manager</a></p>
         </div><!-- end content-->
         <!-- others -->
-        <div id="importCsvDiv" class="jqmWindow" style="display:none">
+        <div id="addMember" class="jqmWindow"><h2>Add new member</h2></div>
+        <div id="editMember" class="jqmWindow"></div>
+        <div id="importCsv" class="jqmWindow" style="display:none">
             <p>Imports a CSV file with fieldsnames on first row, ";" as separator, "\" as escape-character. File encoding: ISO 8859-15</p>
             <form action="port.php?action=import" method="post" enctype="multipart/form-data">
                 <label for="importCsvFileName">CSV file to import:</label>
