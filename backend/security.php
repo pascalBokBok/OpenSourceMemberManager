@@ -1,5 +1,11 @@
 <?php
 
+function errorIfNotAuthenticated(){
+    if (!isset($_SESSION["authenticated"]) or $_SESSION["authenticated"]!==true){
+        Throw new Exception("You are not logged in.",401); //code 401 (unauthorized) copied from http protocol
+    }
+}
+
 function authenticate(){
     //disabled for now; use htaccess
     $_SESSION["authenticated"] = true;
