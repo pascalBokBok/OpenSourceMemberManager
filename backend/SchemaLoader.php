@@ -25,13 +25,13 @@ class SchemaLoader {
         $schema = self::getSchema();
         $sql = "";
         foreach ($schema->data_structures as $table){
-            $sql .= createDatabaseTable($table);
+            $sql .= self::createDatabaseTable($table);
         }
         return $sql;
     }
     
     /** takes a table struture and returns a sql create statement */
-    function createDatabaseTable($table){
+    public static function createDatabaseTable($table){
         $cols = array();
         foreach ($table->fields as $field){
             $myCol = "'".$field->name."' ".self::$fieldType2sqliteType[$field->type];
