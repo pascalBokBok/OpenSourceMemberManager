@@ -32,20 +32,18 @@ function deleteMember(id){
 }
 function renderMemberList(data){
     var items = [];
+//     if (data.length>0){
+//         var keys Object.keys(val);
+//     }
     $.each(data, function(key, val) {
-        items.push('<tr id="' + key + '"><td>' + 
-        '<a href="javascript:void(0)" onclick="editMemberInitiate('+val["id"]+')">✎</a> </td><td>' + 
-          val["name"] + '</td><td>' + 
-          val["surname"] + '</td><td>' +
-          val["email_address"] + '</td><td>' +
-          val["street"] + '</td><td>' +
-          val["postal_code"] + '</td><td>' +
-          val["city"] + '</td><td>' +
-          val["country"] + '</td><td>' +
-          val["group"] + '</td><td>' +
-          val["telephone"] + '</td><td>' +
-          val["last_payment_year"] + '</td><td>' +
-          '<a href="javascript:void(0)" onclick="deleteMember('+val["id"]+')">❌</a></td></tr>');
+        var id = val.id;
+        delete val.id;
+        var row = '<tr><td><a href="javascript:void(0)" onclick="editMemberInitiate('+id+')">✎</a> </td>';
+        for (var fieldName in val) {
+            row += '<td>' + val[fieldName] + '</td>';
+        }
+        row += '<td><a href="javascript:void(0)" onclick="deleteMember('+id+')">❌</a></td></tr>';
+          items.push(row);
     });
     $('#memberList').replaceWith($('<table/>',{id:'memberList',html: items.join('')}));
 }
