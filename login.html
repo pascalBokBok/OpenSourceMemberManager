@@ -1,0 +1,35 @@
+<section class="appLogin">
+	<div class="loginPage">
+		<div class="formWrapper">
+			<form name="appForm"
+				  ng-submit="login()" novalidate>
+				<div class="introText">
+					<h1>Welcome to</h1>
+					<h4>Open Source Member Manager</h4>
+					<p class="successLogInMessage" ng-show="message">{{message}}</p>
+				</div>
+					<fieldset>
+						<div class="formEmail">
+							<input type="text" name="email" placeholder="E-mail"
+							ng-model="user.email" required="true">
+							<p class="error validationError"
+							ng-show="appForm.email.$invalid && appForm.email.$touched">
+							Please insert a valid email
+							</p>
+						</div>
+						<div class="formPassword">
+							<input type="password" name="password" placeholder="Password" ng-model="user.password" required="true">
+							<p class="error validationError"
+							ng-show="appForm.password.$invalid && appForm.password.$touched">
+							Please insert a valid password
+							</p>
+						</div>
+						<div class="formButton">
+							<button type="submit" class="btn" ng-disabled="appForm.$invalid">Log in</button>
+						</div>
+						<p class="formMessage">Not registered yet? <a ng-href="#/register">Create an account</a></p>
+					</fieldset>
+			</form>
+		</div>
+	</div>
+</section>

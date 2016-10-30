@@ -1,0 +1,36 @@
+<section class="registration">
+	<div class="loginPage"></div>
+		<div class="formWrapper">
+			<form name="appForm"
+				  ng-submit="register()" novalidate>
+				<div class="introText">
+					<h1>Registration</h1>
+					<p class="succesRegisterMesage" ng-show="message">{{message}}</p>
+				</div>
+					<fieldset>
+						<input type="firstname" name="firstname" placeholder="First Name" ng-model="user.firstname" required="true">
+						<p class="error validationError"
+						   ng-show="appForm.firstname.$invalid && appForm.firstname.$touched">
+							Please insert your first name
+						</p>
+						<input type="lastname" name="lastname" placeholder="Last Name" ng-model="user.lastname" required="true">
+						<p class="error validationError"
+						   ng-show="appForm.lastname.$invalid && appForm.lastname.$touched">
+							Please insert your last name
+						</p>
+						<input type="email" name="email" placeholder="E-mail" ng-model="user.email" required="true">
+						<p class="error validationError"
+						   ng-show="appForm.email.$invalid && appForm.email.$touched">
+							Please insert a valid email
+						</p>
+						<input type="password" name="password" placeholder="password" ng-model="user.password" required="true">
+						<p class="error validationError"
+						   ng-show="appForm.password.$invalid && appForm.password.$touched">
+							Please insert a valid password
+						</p>
+					</fieldset>
+					<button type="submit" class="btn" ng-disabled="appForm.$invalid">Register</button>
+					<p>Already have an account? <a ng-href="#/login">Sign in</a></p>
+			</form>
+		</div>
+</section>

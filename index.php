@@ -9,32 +9,21 @@
     <link rel="stylesheet" href="style/jqModal.css">
     <script type="text/javascript" src="script/main.js"></script>
     <script type="text/javascript" src="script/jqModal.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.0/angular-route.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.0/angular-animate.min.js"></script>
+    <script src="script/app.js"></script>
+    <script src="controllers/registration.js"></script>
+    <script src="controllers/success.js"></script>
     </head>
-    <body>
-        <div id="head">
-            <h1>Open Source Member Manager</h1>
-            <div id="menu">
-                <span class="entry" id="addMemberButton">Add member</span>
-                <span class="entry" id="importExportButton">Import/export</span>
-            </div>
-        </div>
-        <div id="content">
-            <h2>Members</h2>
-            <ul id="memberList"></ul>
-            <hr>
-            <p align="center"><a href="https://github.com/pascalBokBok/OpenSourceMemberManager" target="_blank">Open Source Member Manager</a></p>
-        </div><!-- end content-->
-        <!-- others -->
-        <div id="addMember" class="jqmWindow"><h2>Add new member</h2></div>
-        <div id="editMember" class="jqmWindow"></div>
-        <div id="importCsv" class="jqmWindow" style="display:none">
-            <p>Imports a CSV file with fieldsnames on first row, ";" as separator, "\" as escape-character. File encoding: ISO 8859-15</p>
-            <form action="port.php?action=import" method="post" enctype="multipart/form-data">
-                <label for="importCsvFileName">CSV file to import:</label>
-                <input type="file" id="importCsvFileName" name="importFile"><br>
-                <input type="submit">
-            </form>
-            <a href="port.php?action=export">Export as CSV.</a>
+    <body ng-app="membershipApp">
+    <!--
+        <header>
+            <nav class="navigation" ng-include="'views/nav.html'"></nav>
+        </header>
+        -->
+        <div class="page" ng-view>
+            <main class="mainArea"></main>
         </div>
     </body>
 </html>
