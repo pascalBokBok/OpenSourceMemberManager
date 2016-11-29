@@ -111,11 +111,11 @@
                     "caption":"Telephone",
                     "properties":[]
                 },{
-                    "name": "paid 2016",
+                    "name": "paid_2016",
                     "type": "text",
                     "required":false,
                     "editable":true,
-                    "caption":"Last Payment year",
+                    "caption":"Paid 2016",
                     "properties":[]
                 }
             ],
