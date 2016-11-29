@@ -27,41 +27,10 @@
                     "editable":true,
                     "caption":"Name",
                     "properties":[]
-                },{
-                    "name": "privileges",
-                    "type": "text",
-                    "required":true,
-                    "editable":true,
-                    "caption":"Privileges",
-                    "properties":[]
-                }
-            ]
-        },"privileges":{
-            "name": "privileges",
-            "caption": "Privileges",
-            "identifier_field": "name",
-            "caption_fields": ["name"],
-            "fields": [
-                {
-                    "name": "name",
-                    "type": "text",
-                    "required":true,
-                    "editable":true,
-                    "caption":"Name",
-                    "properties":[]
-                },{
-                    "name": "description",
-                    "type": "text",
-                    "required":true,
-                    "editable":true,
-                    "caption":"Description",
-                    "properties":[]
                 }
             ],
             "default_data": [
-                ["members_access", "See members list"],
-                ["members_management", "Manage the member list"],
-                ["user_management", "Manage the users of this system"]
+                ["admin@example.com", "admin","Default admin"]
             ]
         },
         "members": {
@@ -142,13 +111,17 @@
                     "caption":"Telephone",
                     "properties":[]
                 },{
-                    "name": "last_payment_year",
+                    "name": "paid 2016",
                     "type": "text",
                     "required":false,
                     "editable":true,
                     "caption":"Last Payment year",
                     "properties":[]
                 }
+            ],
+            "default_data": [
+                [null,"Jens","Hansen","admin@example.com","Vejen 3","1337","Cybercity","Denmark", "EPP","21699880","x"],
+                [null,"Hans","Jensen","admin2@example.com","Vejen 4","1337","Cybercity","Denmark", "EPP","21699881","x"]
             ]
         }
     }

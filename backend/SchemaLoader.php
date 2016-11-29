@@ -9,7 +9,9 @@ class SchemaLoader {
         "email"=>"text",
         "integer"=> "integer",
         "date"=>"integer",
-        "select"=>"text");
+        "select"=>"text",
+        "password"=>"text",
+        );
     
     public static function getSchemaJSON(){
         return file_get_contents(self::$filePath);
@@ -18,7 +20,11 @@ class SchemaLoader {
      associative: if want data structure in associative array instead of object.
      */
     public static function getSchema($associative=false){
-        return json_decode(self::getSchemaJSON(),$associative);
+        $schema =  json_decode(self::getSchemaJSON(),$associative);
+        if ($schema==null){
+            throw new Exception("Could not read schema file");
+        }
+        return $schema;
     }
     /** return an SQL string to create the database structure */
     public static function createDatabaseSchemaSQL(){
@@ -26,6 +32,7 @@ class SchemaLoader {
         $sql = "";
         foreach ($schema->data_structures as $table){
             $sql .= self::createDatabaseTable($table);
+            $sql .= self::insertDefaultData($table);
         }
         return $sql;
     }
@@ -50,6 +57,33 @@ class SchemaLoader {
             ".implode($cols,",\n")."
             );";
         return $createTableSQL;
+    }
+    
+    public static function insertDefaultData($table){
+        if (empty($table->default_data)){
+            return '';
+        }
+        $columnNames = [];
+        foreach ($table->fields as $field){
+            $columnNames[] = '"'.$field->name.'"';
+        }
+        $sql ='';
+        foreach ($table->default_data as $row){
+            $myRow = [];
+            foreach ($row as $index => $field){
+                $fieldType = self::$fieldType2sqliteType[ $table->fields[$index]->type ];
+                if ($fieldType == 'text'){
+                    $myRow[] = "'".SQLite3::escapeString($field)."'";
+                } else {
+                    $myRow[] = $field === null ? 'null' : $field;
+                }
+            }
+            $sql .= 'insert into '.$table->name .'('.implode(', ',$columnNames).')'.
+                ' values ('.implode (', ',$myRow).');';
+        }
+        return $sql;
+        
+        
     }
     
 }

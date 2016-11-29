@@ -2,17 +2,21 @@
 
 function initialize($db){
     require_once "backend/SchemaLoader.php";
-    $dbSchema = SchemaLoader::createDatabaseSchemaSQL();
-    if ($db->exec($dbSchema) ===FALSE){
+    $createDbSql = 'begin transaction;'.SchemaLoader::createDatabaseSchemaSQL().'end transaction;';
+    if ($db->exec($createDbSql) ===FALSE){
         throw new Exception ("Initializing database schema failed: ".$db->lastErrorMsg());
     }
 }
 
 function connect(){
     /** DB path is relative to api.php */
-    if ($db = new SQLite3('backend/db.sqlite3',SQLITE3_OPEN_READWRITE | SQLITE3_OPEN_CREATE)){
-        $tableCheck = $db->query("SELECT name FROM sqlite_master WHERE name='members'");
-        if ($tableCheck->fetchArray() === FALSE){
+    $db = new SQLite3('backend/db.sqlite3',SQLITE3_OPEN_READWRITE | SQLITE3_OPEN_CREATE);
+    if (is_a($db,'SQLite3')){
+        $db->enableExceptions(true);
+        $tableCheck = $db->query("SELECT count(*) FROM sqlite_master WHERE name='members';");
+        //check if table members exist. numColumns cannot be used - it will return 1 for zero rows. 
+        $row = $tableCheck->fetchArray(SQLITE3_NUM);
+        if ($row[0]==0){
             initialize($db);
         }
         return $db;
