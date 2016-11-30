@@ -14,7 +14,7 @@ function connect(){
     if (is_a($db,'SQLite3')){
         $db->enableExceptions(true);
         $tableCheck = $db->query("SELECT count(*) FROM sqlite_master WHERE name='members';");
-        //check if table members exist. numColumns cannot be used - it will return 1 for zero rows. 
+        //check if table members exist.
         $row = $tableCheck->fetchArray(SQLITE3_NUM);
         if ($row[0]==0){
             initialize($db);
