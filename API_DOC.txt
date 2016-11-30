@@ -1,0 +1,20 @@
+API
+
+Entities
+    members
+        custom as per data_structure.json
+    Users - not used
+        email_address
+        password
+        name
+
+Reponse is JSON formated object with a payload field containing the requested result
+
+        
+GET      /members
+POST     /members
+
+GET      /members/{id}
+PUT      /members/{id}
+PATCH    /members/{id}
+DELETE   /members/{id}         

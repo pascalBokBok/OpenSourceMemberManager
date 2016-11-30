@@ -4,11 +4,11 @@
  */
 session_start();
 $response = array('error'=>false,'payload'=>null);
-if (!isset($_GET["action"])){
-    throw new Exception("You need to specify an action.");
-}
-$action = $_REQUEST["action"];
 try {    
+    if (!isset($_GET["action"])){
+        throw new Exception("You need to specify an action.");
+    }
+    $action = $_REQUEST["action"];
     require_once "backend/security.php";
     if ($action=="authenticate"){
         authenticate();
@@ -59,6 +59,7 @@ try {
     $response["error"] = true;
     $response["error_msg"] = $e->getMessage();
     $response["error_code"]= $e->getCode();
+    $response["stack"]= $e->getTraceAsString();
 }
 $response["payload"] = isset($payload) ? $payload : null;
 exit(json_encode($response));
