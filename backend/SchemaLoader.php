@@ -4,7 +4,7 @@
  * 
  */
 class SchemaLoader {
-    private static $filePath = 'backend/data_structure.json';
+    private static $filePath = __DIR__.'/data_structure.json';
     private static $fieldType2sqliteType = array("text"=>"text",
         "email"=>"text",
         "integer"=> "integer",
