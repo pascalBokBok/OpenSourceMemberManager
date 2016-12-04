@@ -1,7 +1,7 @@
 <?php
 
 function initialize($db){
-    require_once "backend/SchemaLoader.php";
+    require_once __DIR__."/SchemaLoader.php";
     $createDbSql = 'begin transaction;'.SchemaLoader::createDatabaseSchemaSQL().'end transaction;';
     if ($db->exec($createDbSql) ===FALSE){
         throw new Exception ("Initializing database schema failed: ".$db->lastErrorMsg());
@@ -10,7 +10,7 @@ function initialize($db){
 
 function connect(){
     /** DB path is relative to api.php */
-    $db = new SQLite3('backend/db.sqlite3',SQLITE3_OPEN_READWRITE | SQLITE3_OPEN_CREATE);
+    $db = new SQLite3(__DIR__.'/db.sqlite3',SQLITE3_OPEN_READWRITE | SQLITE3_OPEN_CREATE);
     if (is_a($db,'SQLite3')){
         $db->enableExceptions(true);
         $tableCheck = $db->query("SELECT count(*) FROM sqlite_master WHERE name='members';");
@@ -29,11 +29,12 @@ function returnDBError($db){
   return 'Database error '.$db->lastErrorCode().': '.$db->lastErrorMsg();
 }
 
-function getMembers($id=null){
+function getMembers($id=null,$return=null){
     $db = connect();
     $q="Select * from members";
-    if ($id!=null)
+    if ($id!=null){
         $q .= ' where id='.(int)$id;
+    }
     $res = $db->query($q);
     if ($res==false){
         throw new Exception("Could not get memberlist. \n".returnDBError($db));
@@ -42,11 +43,14 @@ function getMembers($id=null){
     while ($row = $res->fetchArray(SQLITE3_ASSOC)) {
         $out[] = $row;
     }
-    return $out;
+    if($return!=null){
+        return $out;
+    }
+    Flight::json($out,"200");
 }
 
 function addNewMember($member){
-    require_once "backend/SchemaLoader.php";
+    require_once __DIR__."/SchemaLoader.php";
     $db = connect();
     $schema = SchemaLoader::getSchema();
     $memberFields = $schema->data_structures->members->fields;
@@ -58,7 +62,7 @@ function addNewMember($member){
         $columnNames[] = "'".$f->name."'";
         $fieldValues[] = "'".$db->escapeString($member[$f->name])."'";
     }
-    $result = $db->exec("insert  into Members(".implode($columnNames,',').") 
+    $result = $db->exec("insert into Members(".implode($columnNames,',').") 
         values (".implode($fieldValues,',').")");
     if (!$result)
         throw new Exception("Could not add member. \n".returnDBError($db));
@@ -67,7 +71,7 @@ function addNewMember($member){
 function updateMember($member){
     $db = connect();
     $id = (int) $member["id"];
-    require_once "backend/SchemaLoader.php";
+    require_once __DIR__."/SchemaLoader.php";
     $schema = SchemaLoader::getSchema();
     $memberFields = $schema->data_structures->members->fields;
     $data = array();
@@ -88,6 +92,7 @@ function updateMember($member){
     if ($db->changes()==0){
         throw new Exception("No change in database");
     }
+    Flight::json("Member Updated",200);
 }
 
 function deleteMember($id){
@@ -101,7 +106,14 @@ function deleteMember($id){
     }
 }
 function getMemberFields(){
-    require_once "backend/SchemaLoader.php";
+    require_once __DIR__."/SchemaLoader.php";
+    $schema = SchemaLoader::getSchema();
+    $memberFields = $schema->data_structures->members->fields;
+    Flight::json($memberFields,200);
+}
+
+function getMemberFieldsNames(){
+    require_once __DIR__."/SchemaLoader.php";
     $schema = SchemaLoader::getSchema();
     $memberFields = $schema->data_structures->members->fields;
     $dataFields   = Array();
@@ -120,7 +132,7 @@ function str_putcsv($input, $delimiter = ',', $enclosure = '"') {
     return $data;
 }
 function exportCsv(){
-    $memberFields = getMemberFields();
+    $memberFields = getMemberFieldsNames();
     $csv = str_putcsv($memberFields,';');
     $db = connect();
     $sql = 'Select "'.implode($memberFields,'","').'" from members;';
@@ -135,7 +147,7 @@ function importCsv($data) {
     $db = connect();
     $importFields = array_shift($data);
     $importMap    = Array();
-    require_once "backend/SchemaLoader.php";
+    require_once __DIR__."/SchemaLoader.php";
     $schema = SchemaLoader::getSchema($assoc=true);
     $databaseFields = $schema["data_structures"]["members"]["fields"];
     $dataFields   = Array();

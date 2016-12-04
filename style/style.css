@@ -1,6 +1,5 @@
 label{
     width:125px;
-    float:left;
 }
 #addMember{
     display:none;
@@ -9,7 +8,8 @@ body{
     margin:0;
 }
 table{
-    font:inherit;
+    border-collapse:separate; 
+    border-spacing:10px;
 }
 
 #head{
@@ -18,7 +18,7 @@ table{
     left:0;
     padding: 5px 10px;
     width:100%;
-    height:40px;
+    height:55px;
     background-color:black;
     color:white;
     vertical-align:middle;
