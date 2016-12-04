@@ -1,17 +1,15 @@
 <!DOCTYPE html>
 <html>
     <head>
-    <meta content="text/html; charset=UTF-8" http-equiv="content-type">
-    <script src="https://code.jquery.com/jquery-1.9.1.min.js">
-// 		For privacy reasons you should consider downloading your own copy from jquery.com/
-    </script>
-    <link rel="stylesheet" href="script/bootstrap-3.3.7/bootstrap.min.css">
-    <link rel="stylesheet" href="style/style.css">
-    <link rel="stylesheet" href="style/jqModal.css">
-    <script src="script/angular-1.5.8/angular.min.js"></script>
-    <script src="script/bootstrap-3.3.7/bootstrap.min.js"></script>
-    <script type="text/javascript" src="script/main.js"></script>
-    <script type="text/javascript" src="script/jqModal.js"></script>
+        <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+        <link rel="stylesheet" href="style/bundled/bootstrap.min.css">
+        <link rel="stylesheet" href="style/bundled/jqModal.css">
+        <link rel="stylesheet" href="style/style.css">
+        <script src="script/bundled/jquery-3.1.1.min.js"></script>
+        <script src="script/bundled/angular.min.js"></script>
+        <script src="script/bundled/bootstrap.min.js"></script>
+        <script src="script/bundled/jqModal.js"></script>
+        <script src="script/main.js"></script>
     </head>
     <body ng-app="OSMapp" ng-controller="OSMctrl">
         <div id="head">
