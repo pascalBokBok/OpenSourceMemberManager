@@ -87,11 +87,11 @@ function testDatabaseProtection(){
     });
 }
 
-function formDataToJsonObject(formname){
-    var data = $('#'+formname).serialize().split("&");
+function formDataToJavascriptObject(formname){
+    var data = $('#'+formname).serializeArray();
     var obj={};
-    for(var key in data){
-        obj[data[key].split("=")[0]] = data[key].split("=")[1];
+    for(var index in data){
+        obj[data[index].name] = data[index].value || "";
     }
     return obj;
 }
@@ -106,7 +106,7 @@ function createMemberForms(memberFields){
             dataType: "json",
             async: false,
             contentType: "application/json",
-            data: JSON.stringify(formDataToJsonObject("newMemberForm"))
+            data: JSON.stringify(formDataToJavascriptObject("newMemberForm"))
         });
         refreshMemberlist();
         return false;
@@ -120,7 +120,7 @@ function createMemberForms(memberFields){
             dataType: "json",
             async: false,
             contentType: "application/json",
-            data: JSON.stringify(formDataToJsonObject("editMemberForm")),
+            data: JSON.stringify(formDataToJavascriptObject("editMemberForm")),
             success: function(data) {
             
             }
