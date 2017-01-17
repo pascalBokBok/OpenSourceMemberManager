@@ -1,20 +1,8 @@
 
 $(document).ready(function(){
-    init();
+    buildPage();
 });
 
-function refreshMemberlist(){
-    var list = null;
-    $.ajax({
-        type: 'GET',
-        url: 'api/members',
-        async: false,
-        success: function(data) {
-            list = data;
-        } 
-    });
-    return list;
-}
 
 function deleteMember(id){
     if (confirm ("Are you sure you want to delete?")){
@@ -26,21 +14,6 @@ function deleteMember(id){
     refreshMemberlist();
 }
 
-function renderMemberList(data){
-    var items = [];
-    $.each(data, function(key, val) {
-        var id = val.id;
-        delete val.id;
-        var row = '<tr><td><a href="javascript:void(0)" onclick="editMemberInitiate('+id+')">✎</a> </td>';
-        for (var fieldName in val) {
-            row += '<td>' + val[fieldName] + '</td>';
-        }
-        row += '<td><a href="javascript:void(0)" onclick="deleteMember('+id+')">❌</a></td></tr>';
-          items.push(row);
-    });
-    $('#memberList').replaceWith($('<table/>',{id:'memberList',html: items.join('')}));
-}
-
 function buildPage(){
     $('#addMemberButton').click(addMemberForm);
     $('#addMember').jqm();
@@ -48,25 +21,6 @@ function buildPage(){
     $('#importCsv').jqm().jqmAddTrigger("#importExportButton");
     //always do a check if data is well protected.
     testDatabaseProtection();
-}
-
-function refreshData(){
-    refreshMemberlist();
-    var returndata = null;
-    $.ajax({
-        url: 'api/memberfields',
-        type: 'get',
-        async: false,
-        success: function(data) {
-            returndata = data;
-        } 
-    });
-    createMemberForms(returndata);
-}
-
-function init(){
-    buildPage();
-    refreshData();
 }
 
 function testDatabaseProtection(){
@@ -208,8 +162,9 @@ function createForm(id,elements){
 }
 
 var app = angular.module('OSMapp', []);
-app.controller('OSMctrl', function($scope) {
-    $scope.memberList = refreshMemberlist();
+app.controller('OSMctrl', function($scope,$http) {
+    $http.get('api/members').success(function(data) {$scope.members = data});
+    $http.get('api/memberfields').success(function(data) {$scope.memberFields = data});
     
     $scope.editMember = function(id){
         editMemberInitiate(id);

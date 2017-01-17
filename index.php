@@ -22,19 +22,17 @@
         <div id="content">
             <h2 style="margin-left:10px;">Members</h2>
             <table>
-                <tr><th></th><th>Firstname</th><th>Surname</th><th>Email</th><th>Telephone</th><th>Street</th><th>City</th><th>Postal Code</th><th>Country</th><th>Group</th><th>Paid 2016</th><th></th></tr>
-                <tr ng-repeat="member in memberList">
+                <tr> <!--table headers-->
+                    <th><!--buttons--></th>
+                    <th ng-repeat="field in memberFields" ng-if="field.editable">
+                        {{field.caption}}
+                    </th>
+                </tr>
+                <tr ng-repeat="member in members">
                     <td><a href="javascript:void(0)" ng-click="editMember(member.id)">✎</a></td>
-                    <td>{{member.name}}</td>
-                    <td>{{member.surname}}</td>
-                    <td>{{member.email_address}}</td>
-                    <td>{{member.telephone}}</td>
-                    <td>{{member.street}}</td>
-                    <td>{{member.city}}</td>
-                    <td>{{member.postal_code}}</td>
-                    <td>{{member.country}}</td>
-                    <td>{{member.group}}</td>
-                    <td>{{member.paid_2016}}</td>
+                    <td ng-repeat="field in memberFields" ng-if="field.editable">
+                        {{member[field.name]}}
+                    </td>
                     <td><a href="javascript:void(0)" ng-click="deleteMember(member.id)">❌</a></td>
                 </tr>
             </table>
@@ -42,8 +40,20 @@
             <p align="center"><a href="https://github.com/pascalBokBok/OpenSourceMemberManager" target="_blank">Open Source Member Manager</a></p>
         </div><!-- end content-->
         <!-- others -->
-        <div id="addMember" class="jqmWindow"><h2>Add new member</h2></div>
-        <div id="editMember" class="jqmWindow"></div>
+        <div id="addMember" class="jqmWindow">
+            <h2>Add new member</h2>
+            <form>
+                <div ng-repeat="field in memberFields" ng-if="field.editable">
+                    <label>
+                        {{field.caption}}
+                    </label>
+                    <input type="{{field.type}}" name="{{field.name}}">
+                </div>
+                <label></label><input type="Submit">
+            </form>
+        </div>
+        <div id="editMember" class="jqmWindow">
+        </div>
         <div id="importCsv" class="jqmWindow" style="display:none">
             <p>Imports a CSV file with fieldsnames on first row, ";" as separator, "\" as escape-character. File encoding: ISO 8859-15</p>
             <form action="port.php?action=import" method="post" enctype="multipart/form-data">
