@@ -42,15 +42,6 @@
         <!-- others -->
         <div id="addMember" class="jqmWindow">
             <h2>Add new member</h2>
-            <form>
-                <div ng-repeat="field in memberFields" ng-if="field.editable">
-                    <label>
-                        {{field.caption}}
-                    </label>
-                    <input type="{{field.type}}" name="{{field.name}}">
-                </div>
-                <label></label><input type="Submit">
-            </form>
         </div>
         <div id="editMember" class="jqmWindow">
         </div>

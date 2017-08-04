@@ -31,7 +31,7 @@ if (isset($_FILES['importFile'])) {
     header('Expires: 0');
     header('Cache-Control: private');
     header('Pragma: public');
-    header('Content-Length: ' . mb_strlen($csv, '8bit')/*$fileStat["size"]*/);
+    header('Content-Length: ' . strlen($csv)/*$fileStat["size"]*/);
     ob_clean();
     echo $csv;
     flush();

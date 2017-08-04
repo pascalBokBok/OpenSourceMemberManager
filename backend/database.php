@@ -59,13 +59,19 @@ function addNewMember($member){
     foreach ($memberFields as $f){
         if (in_array("autoincrement",$f->properties))
             continue;//skip
+        if ($f->required and empty($member[$f->name]) ){
+            throw new Exception ($f->name.' is required.');
+        }
         $columnNames[] = "'".$f->name."'";
         $fieldValues[] = "'".$db->escapeString($member[$f->name])."'";
     }
     $result = $db->exec("insert into Members(".implode($columnNames,',').") 
         values (".implode($fieldValues,',').")");
-    if (!$result)
+    if (!$result){
         throw new Exception("Could not add member. \n".returnDBError($db));
+    } else {
+        flight::json([],201);
+    }
 }
 
 function updateMember($member){

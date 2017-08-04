@@ -3,6 +3,15 @@ $(document).ready(function(){
     buildPage();
 });
 
+function apiReplyWrapper(dataJSON,successFunc){
+//     console.log(dataJSON);
+    var data = JSON.parse(dataJSON);
+    if (data.error) {
+        alert(data.error_msg);
+    } else {
+        successFunc(data["payload"]);
+    }
+};
 
 function deleteMember(id){
     if (confirm ("Are you sure you want to delete?")){
@@ -11,7 +20,7 @@ function deleteMember(id){
             url: 'api/members/'+id,
         });
     }
-    refreshMemberlist();
+    document.location.reload();
 }
 
 function buildPage(){
@@ -20,7 +29,7 @@ function buildPage(){
     $('#editMember').jqm();
     $('#importCsv').jqm().jqmAddTrigger("#importExportButton");
     //always do a check if data is well protected.
-    testDatabaseProtection();
+//     testDatabaseProtection();
 }
 
 function testDatabaseProtection(){
@@ -54,15 +63,12 @@ function createMemberForms(memberFields){
     //Create and Initiate new member form.
     $('#addMember').append(createForm('newMemberForm',memberFields));
     $('#newMemberForm').submit(function(){
-        $.ajax({
-            type: "POST",
-            url: 'api/members',
-            dataType: "json",
-            async: false,
-            contentType: "application/json",
-            data: JSON.stringify(formDataToJavascriptObject("newMemberForm"))
-        });
-        refreshMemberlist();
+        var newMemberJSON= JSON.stringify(formDataToJavascriptObject("newMemberForm"));
+        $.post(
+            'api/members',
+            newMemberJSON,
+            function (){document.location.reload()}
+        ).fail(function(data) {alert( data.responseJSON.error) });
         return false;
     });
     //Create edit member form.
@@ -75,12 +81,9 @@ function createMemberForms(memberFields){
             async: false,
             contentType: "application/json",
             data: JSON.stringify(formDataToJavascriptObject("editMemberForm")),
-            success: function(data) {
-            
-            }
+            success: function(data) {document.location.reload(); }
         });
         $('#editMember').jqmHide();
-        refreshMemberlist();
         return false;
     });
 }
@@ -164,7 +167,7 @@ function createForm(id,elements){
 var app = angular.module('OSMapp', []);
 app.controller('OSMctrl', function($scope,$http) {
     $http.get('api/members').success(function(data) {$scope.members = data});
-    $http.get('api/memberfields').success(function(data) {$scope.memberFields = data});
+    $http.get('api/memberfields').success(function(data) {$scope.memberFields = data;createMemberForms(data)});
     
     $scope.editMember = function(id){
         editMemberInitiate(id);

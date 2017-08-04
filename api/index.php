@@ -31,8 +31,11 @@ Flight::route('DELETE /members/@id', function($id){
     deleteMember($id);
 });
 
-Flight::start();
-
+try {
+    Flight::start();
+} catch (Exception $e){
+    flight::json(['error'=>$e->getMessage()],500);
+}
 
 
 
