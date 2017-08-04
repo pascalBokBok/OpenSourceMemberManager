@@ -1,74 +1,36 @@
-function apiCall(action, func, args){
-    var params = {action:action};
-    if ($.isArray(args)){
-        for (var i=0;i<args.length;i++){
-            params[args[i].name] = args[i].value;
-        }
-    } else if ($.isPlainObject(args)){
-        $.each(args, function(key, val){
-            params[key] = val;
-        });
-    }
-    var handler = function (dataJSON){
-        var data = JSON.parse(dataJSON);
-        if (data.error_code == 401){ //unauthorized
-            authenticate();
-        } else if (data.error) {
-            alert(data.error_msg);
-        } else {
-            func(data["payload"]);
-        }
-    };
-    $.get('api.php',params, handler);
-}
 
-function refreshMemberlist(){
-    apiCall('getMemberList',renderMemberList);
-}
+$(document).ready(function(){
+    buildPage();
+});
+
+function apiReplyWrapper(dataJSON,successFunc){
+//     console.log(dataJSON);
+    var data = JSON.parse(dataJSON);
+    if (data.error) {
+        alert(data.error_msg);
+    } else {
+        successFunc(data["payload"]);
+    }
+};
+
 function deleteMember(id){
     if (confirm ("Are you sure you want to delete?")){
-        apiCall('deleteMember',refreshMemberlist,{id:id})
+        $.ajax({
+            type: "DELETE",
+            url: 'api/members/'+id,
+        });
     }
+    document.location.reload();
 }
-function renderMemberList(data){
-    var items = [];
-//     if (data.length>0){
-//         var keys Object.keys(val);
-//     }
-    $.each(data, function(key, val) {
-        var id = val.id;
-        delete val.id;
-        var row = '<tr><td><a href="javascript:void(0)" onclick="editMemberInitiate('+id+')">✎</a> </td>';
-        for (var fieldName in val) {
-            row += '<td>' + val[fieldName] + '</td>';
-        }
-        row += '<td><a href="javascript:void(0)" onclick="deleteMember('+id+')">❌</a></td></tr>';
-          items.push(row);
-    });
-    $('#memberList').replaceWith($('<table/>',{id:'memberList',html: items.join('')}));
-}
+
 function buildPage(){
     $('#addMemberButton').click(addMemberForm);
     $('#addMember').jqm();
     $('#editMember').jqm();
     $('#importCsv').jqm().jqmAddTrigger("#importExportButton");
     //always do a check if data is well protected.
-    testDatabaseProtection();
+//     testDatabaseProtection();
 }
-
-function refreshData(){
-    refreshMemberlist();
-    apiCall("getMemberFields",createMemberForms);
-}
-
-function init(){
-    buildPage();
-    refreshData();
-}
-function authenticate(){
-    apiCall("authenticate",refreshData,{/*password:prompt("What is your password?")*/});
-}
-$(document).ready(apiCall('testAuthenticated',init));
 
 function testDatabaseProtection(){
     /** The database is in a subfolder of the public interface folder. It is protected by a htaccess file.
@@ -87,20 +49,45 @@ function testDatabaseProtection(){
         }
     });
 }
+
+function formDataToJavascriptObject(formname){
+    var data = $('#'+formname).serializeArray();
+    var obj={};
+    for(var index in data){
+        obj[data[index].name] = data[index].value || "";
+    }
+    return obj;
+}
+
 function createMemberForms(memberFields){
     //Create and Initiate new member form.
     $('#addMember').append(createForm('newMemberForm',memberFields));
     $('#newMemberForm').submit(function(){
-        apiCall('addNewMember',afterAddMemberSubmit,$('#newMemberForm').serializeArray());
+        var newMemberJSON= JSON.stringify(formDataToJavascriptObject("newMemberForm"));
+        $.post(
+            'api/members',
+            newMemberJSON,
+            function (){document.location.reload()}
+        ).fail(function(data) {alert( data.responseJSON.error) });
         return false;
     });
     //Create edit member form.
     $('#editMember').html(createForm('editMemberForm',memberFields));
     $('#editMemberForm').submit(function(){
-        apiCall('updateMember',function(){refreshMemberlist();$('#editMember').jqmHide()},$('#editMemberForm').serializeArray());
+        $.ajax({
+            type: "PUT",
+            url: 'api/members/'+$("#editMemberForm input[name=id]").val(),
+            dataType: "json",
+            async: false,
+            contentType: "application/json",
+            data: JSON.stringify(formDataToJavascriptObject("editMemberForm")),
+            success: function(data) {document.location.reload(); }
+        });
+        $('#editMember').jqmHide();
         return false;
     });
 }
+
 function afterAddMemberSubmit(){
     refreshMemberlist();
     $('#newMemberForm').trigger('reset');
@@ -111,24 +98,36 @@ function addMemberForm(){
     $('#addMember').jqmShow();
     $('#addMember input:visible:first').trigger('focus');
 }
+
 function editMemberInitiate(id){
-    var fillInMemberData = function(data) {
-        $('#editMemberForm').get(0).reset(); //some inputs are not set without the reset.
+    function fillInMemberData(data) {
+//         $('#editMemberForm').get(0).reset(); //some inputs are not set without the reset.
         for(var i in memberStruct){
             var el = memberStruct[i];
             var input = $('#editMemberForm>:input[name='+el.name+']');
-            var value = data[el.name];
+            var value = data[0][el.name];
             switch (el.type){
                 case "checkbox":
-                    input.attr('checked',data[el.name]?'checked':'false');
+                    input.attr('checked',data[0][el.name]?'checked':'false');
                 default:
-                    input.attr('value',data[el.name]);
+                    input.attr('value',data[0][el.name]);
             }
         }
         $('#editMember').jqmShow();
     };
-    apiCall('getMember',fillInMemberData,{'id':id});
+    var returndata = null;
+    $.ajax({
+        url: 'api/members/'+id,
+        type: 'get',
+        async: false,
+        success: function(data) {
+            returndata = data;
+        } 
+    });
+    
+    fillInMemberData(returndata);
 }
+
 function createForm(id,elements){
     memberStruct = elements;
     var form = $('<form>').attr('id',id);
@@ -164,3 +163,48 @@ function createForm(id,elements){
     form.append('<input type="submit">');
     return form;
 }
+
+var app = angular.module('OSMapp', []);
+app.controller('OSMctrl', function($scope,$http) {
+    $http.get('api/members').success(function(data) {$scope.members = data});
+    $http.get('api/memberfields').success(function(data) {$scope.memberFields = data;createMemberForms(data)});
+    
+    $scope.editMember = function(id){
+        editMemberInitiate(id);
+    }
+    
+    $scope.deleteMember = function(id){
+        deleteMember(id);
+    }
+    
+    $scope.safeApply = function(fn) {
+        var phase = this.$root.$$phase;
+        if(phase == '$apply' || phase == '$digest') {
+            if(fn && (typeof(fn) === 'function')) {
+                fn();
+            }
+        } else {
+            this.$apply(fn);
+        }
+    };
+    
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

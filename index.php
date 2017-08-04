@@ -1,32 +1,50 @@
 <!DOCTYPE html>
 <html>
     <head>
-    <meta content="text/html; charset=UTF-8" http-equiv="content-type">
-    <script src="https://code.jquery.com/jquery-1.9.1.min.js">
-// 		For privacy reasons you should consider downloading your own copy from jquery.com/
-    </script>
-    <link rel="stylesheet" href="style/style.css">
-    <link rel="stylesheet" href="style/jqModal.css">
-    <script type="text/javascript" src="script/main.js"></script>
-    <script type="text/javascript" src="script/jqModal.js"></script>
+        <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+        <link rel="stylesheet" href="style/bundled/bootstrap.min.css">
+        <link rel="stylesheet" href="style/bundled/jqModal.css">
+        <link rel="stylesheet" href="style/style.css">
+        <script src="script/bundled/jquery-3.1.1.min.js"></script>
+        <script src="script/bundled/angular.min.js"></script>
+        <script src="script/bundled/bootstrap.min.js"></script>
+        <script src="script/bundled/jqModal.js"></script>
+        <script src="script/main.js"></script>
     </head>
-    <body>
+    <body ng-app="OSMapp" ng-controller="OSMctrl">
         <div id="head">
             <h1>Open Source Member Manager</h1>
             <div id="menu">
-                <span class="entry" id="addMemberButton">Add member</span>
-                <span class="entry" id="importExportButton">Import/export</span>
+                <button class="btn btn-default" id="addMemberButton">Add member</button>
+                <button class="btn btn-default" id="importExportButton">Import/export</button>
             </div>
         </div>
         <div id="content">
-            <h2>Members</h2>
-            <ul id="memberList"></ul>
+            <h2 style="margin-left:10px;">Members</h2>
+            <table>
+                <tr> <!--table headers-->
+                    <th><!--buttons--></th>
+                    <th ng-repeat="field in memberFields" ng-if="field.editable">
+                        {{field.caption}}
+                    </th>
+                </tr>
+                <tr ng-repeat="member in members">
+                    <td><a href="javascript:void(0)" ng-click="editMember(member.id)">✎</a></td>
+                    <td ng-repeat="field in memberFields" ng-if="field.editable">
+                        {{member[field.name]}}
+                    </td>
+                    <td><a href="javascript:void(0)" ng-click="deleteMember(member.id)">❌</a></td>
+                </tr>
+            </table>
             <hr>
             <p align="center"><a href="https://github.com/pascalBokBok/OpenSourceMemberManager" target="_blank">Open Source Member Manager</a></p>
         </div><!-- end content-->
         <!-- others -->
-        <div id="addMember" class="jqmWindow"><h2>Add new member</h2></div>
-        <div id="editMember" class="jqmWindow"></div>
+        <div id="addMember" class="jqmWindow">
+            <h2>Add new member</h2>
+        </div>
+        <div id="editMember" class="jqmWindow">
+        </div>
         <div id="importCsv" class="jqmWindow" style="display:none">
             <p>Imports a CSV file with fieldsnames on first row, ";" as separator, "\" as escape-character. File encoding: ISO 8859-15</p>
             <form action="port.php?action=import" method="post" enctype="multipart/form-data">
