@@ -4,7 +4,6 @@ $(document).ready(function(){
 });
 
 function apiReplyWrapper(dataJSON,successFunc){
-//     console.log(dataJSON);
     var data = JSON.parse(dataJSON);
     if (data.error) {
         alert(data.error_msg);
@@ -29,7 +28,7 @@ function buildPage(){
     $('#editMember').jqm();
     $('#importCsv').jqm().jqmAddTrigger("#importExportButton");
     //always do a check if data is well protected.
-//     testDatabaseProtection();
+    testDatabaseProtection();
 }
 
 function testDatabaseProtection(){
@@ -42,7 +41,9 @@ function testDatabaseProtection(){
         data: '',
         complete: function(e, xhr, settings){
             if(e.status === 403){
-                console.log('All is well, the database is protected by the webserver.');
+                if (window.console) {
+                    console.log('All is well, the database is protected by the webserver.');
+                }
             }else {
                 alert("The database is not properly protected by the webserver. There is a problem with htaccess settings.");
             }

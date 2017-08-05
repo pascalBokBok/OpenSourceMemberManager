@@ -46,13 +46,22 @@
         <div id="editMember" class="jqmWindow">
         </div>
         <div id="importCsv" class="jqmWindow" style="display:none">
-            <p>Imports a CSV file with fieldsnames on first row, ";" as separator, "\" as escape-character. File encoding: ISO 8859-15</p>
+            <div class="alert alert-info">
+                <b>CSV file format</b>
+                <ul>
+                    <li>Fieldsnames on first row.</li>
+                    <li>Comma(",") separated values.</li>
+                    <li>"\" as escape-character.</li>
+                    <li>Encoding: UTF-8</li>
+                </ul>
+            </div>
+            <h2>Import</h2>
             <form action="port.php?action=import" method="post" enctype="multipart/form-data">
-                <label for="importCsvFileName">CSV file to import:</label>
                 <input type="file" id="importCsvFileName" name="importFile"><br>
-                <input type="submit">
-            </form>
-            <a href="port.php?action=export">Export as CSV.</a>
+                <input type="submit" value="Import">
+            </form><br>
+            <h2>Export</h2>
+            <p><a href="port.php?action=export">Download as CSV.</a></p>
         </div>
     </body>
 </html>

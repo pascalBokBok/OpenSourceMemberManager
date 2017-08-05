@@ -139,12 +139,12 @@ function str_putcsv($input, $delimiter = ',', $enclosure = '"') {
 }
 function exportCsv(){
     $memberFields = getMemberFieldsNames();
-    $csv = str_putcsv($memberFields,';');
+    $csv = str_putcsv($memberFields);
     $db = connect();
     $sql = 'Select "'.implode($memberFields,'","').'" from members;';
     $members = $db->query($sql);
     while ($member = $members->fetchArray(SQLITE3_NUM)) {
-        $csv .= str_putcsv($member,';');
+        $csv .= str_putcsv($member);
     }
     return $csv;
 }
