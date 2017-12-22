@@ -8,6 +8,8 @@ Features
 * Web based and fast
 * Great import / export functionality.
 
+Demo on https://dhermilly.dk/pascal/OpenSourceMemberManager/
+
 BTW. If you are using this software we would love to know about it :-) Send an email to pascal@dhermilly.dk
 
 Take a look at the wiki for development directions:
